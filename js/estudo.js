@@ -167,6 +167,22 @@
 
     'pratica': function (b) { return secao(b, [T.renderPratica(b, 'h2')]); },
 
+    'imagem': function (b) {
+      return secao(b, [tituloBloco(b.titulo), b.texto ? md(b.texto, 'block-text') : null, T.renderImagem(b)], 'block-imagem');
+    },
+
+    'proxima-palavra': function (b) {
+      return secao(b, [tituloBloco(b.titulo), b.texto ? md(b.texto, 'block-intro') : null, T.criarProximaPalavra(b, { estatico: true }).elemento]);
+    },
+
+    'visao': function (b) {
+      return secao(b, [tituloBloco(b.titulo), b.texto ? md(b.texto, 'block-intro') : null, T.criarVisao(b, { estatico: true }).elemento]);
+    },
+
+    'antes-depois': function (b) {
+      return secao(b, [tituloBloco(b.titulo), b.texto ? md(b.texto, 'block-intro') : null, T.renderAntesDepois(b)]);
+    },
+
     'links': function (b) { return secao(b, [tituloBloco(b.titulo), T.renderLinks(b.itens)]); }
   };
 
@@ -205,7 +221,8 @@
     raiz.textContent = '';
     var minutos = Math.max(1, Math.round(contarPalavras(blocos) / PALAVRAS_POR_MINUTO));
 
-    var cab = el('header', { class: 'module-head' }, [
+    var cab = el('header', { class: 'module-head' + (mod.imagem ? ' com-imagem' : '') }, [
+      mod.imagem ? el('figure', { class: 'module-banner' }, [T.imagem(mod.imagem, mod.imagemAlt || '')]) : null,
       el('p', { class: 'module-kicker', text: t('moduloDe', { atual: indice + 1, total: total }) }),
       el('h1', { id: 'titulo-modulo', tabindex: '-1', text: mod.titulo }),
       mod.resumo ? el('p', { class: 'module-lead', text: mod.resumo }) : null,

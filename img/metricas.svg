@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600" font-family="'Segoe UI', Roboto, Arial, sans-serif">
+  <rect width="800" height="600" fill="#F2F3F5"/>
+  <rect x="24" y="20" width="752" height="560" rx="18" fill="#FFFFFF" stroke="#E3E5E8"/>
+
+  <!-- Cabeçalho -->
+  <text x="56" y="66" font-size="22" font-weight="700" fill="#1F2328">Painel da conta · @cafeserra</text>
+  <text x="56" y="92" font-size="14" fill="#6A7079">Últimos 30 dias</text>
+  <rect x="604" y="48" width="140" height="34" rx="17" fill="#F2F3F5"/>
+  <text x="674" y="70" font-size="13" text-anchor="middle" fill="#3D434A">Exportar dados</text>
+
+  <!-- Indicadores -->
+  <g>
+    <rect x="56" y="114" width="216" height="78" rx="12" fill="#F7F8FA"/>
+    <text x="74" y="140" font-size="13" fill="#6A7079">Seguidores</text>
+    <text x="74" y="174" font-size="26" font-weight="700" fill="#1F2328">4.812</text>
+    <text x="170" y="174" font-size="14" font-weight="600" fill="#1E7F4F">+3,1%</text>
+    <rect x="292" y="114" width="216" height="78" rx="12" fill="#F7F8FA"/>
+    <text x="310" y="140" font-size="13" fill="#6A7079">Salvamentos</text>
+    <text x="310" y="174" font-size="26" font-weight="700" fill="#1F2328">312</text>
+    <text x="370" y="174" font-size="14" font-weight="600" fill="#1E7F4F">+48%</text>
+    <rect x="528" y="114" width="216" height="78" rx="12" fill="#F7F8FA"/>
+    <text x="546" y="140" font-size="13" fill="#6A7079">Engajamento médio</text>
+    <text x="546" y="174" font-size="26" font-weight="700" fill="#1F2328">4,1%</text>
+    <text x="616" y="174" font-size="14" font-weight="600" fill="#B42318">−0,4 p.p.</text>
+  </g>
+
+  <!-- Gráfico -->
+  <text x="56" y="232" font-size="16" font-weight="700" fill="#1F2328">Alcance por publicação</text>
+  <g stroke="#ECEEF1" stroke-width="1">
+    <line x1="56" y1="270" x2="744" y2="270"/>
+    <line x1="56" y1="330" x2="744" y2="330"/>
+    <line x1="56" y1="390" x2="744" y2="390"/>
+    <line x1="56" y1="450" x2="744" y2="450"/>
+  </g>
+  <line x1="56" y1="510" x2="744" y2="510" stroke="#C9CDD2"/>
+  <g font-size="12" fill="#8A9099" text-anchor="end">
+    <text x="50" y="274">10 mil</text>
+    <text x="50" y="394">5 mil</text>
+    <text x="50" y="514">0</text>
+  </g>
+
+  <g>
+    <rect x="86" y="481" width="62" height="29" rx="6" fill="#9DA7B3"/>
+    <rect x="200" y="428" width="62" height="82" rx="6" fill="#9DA7B3"/>
+    <rect x="314" y="296" width="62" height="214" rx="6" fill="#4F7FD9"/>
+    <rect x="428" y="488" width="62" height="22" rx="6" fill="#9DA7B3"/>
+    <rect x="542" y="328" width="62" height="182" rx="6" fill="#4F7FD9"/>
+    <rect x="656" y="443" width="62" height="67" rx="6" fill="#9DA7B3"/>
+  </g>
+  <g font-size="13" font-weight="700" fill="#1F2328" text-anchor="middle">
+    <text x="117" y="472">1,2 mil</text>
+    <text x="231" y="419">3,4 mil</text>
+    <text x="345" y="287">8,9 mil</text>
+    <text x="459" y="479">0,9 mil</text>
+    <text x="573" y="319">7,6 mil</text>
+    <text x="687" y="434">2,8 mil</text>
+  </g>
+  <g font-size="12" fill="#3D434A" text-anchor="middle">
+    <text x="117" y="532">Foto</text><text x="117" y="548" fill="#8A9099">02/set</text>
+    <text x="231" y="532">Reels</text><text x="231" y="548" fill="#8A9099">06/set</text>
+    <text x="345" y="532">Carrossel</text><text x="345" y="548" fill="#8A9099">10/set</text>
+    <text x="459" y="532">Foto</text><text x="459" y="548" fill="#8A9099">15/set</text>
+    <text x="573" y="532">Carrossel</text><text x="573" y="548" fill="#8A9099">20/set</text>
+    <text x="687" y="532">Reels</text><text x="687" y="548" fill="#8A9099">26/set</text>
+  </g>
+</svg>
