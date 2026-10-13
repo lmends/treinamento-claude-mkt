@@ -38,7 +38,13 @@
      nota: "…"           lembrete para o instrutor (tecla N na apresentação)
 
    Bloco "visao": marcacoes: [{ x, y, rotulo, lado }] — x e y em % da imagem;
-   lado (opcional) = "direita", "esquerda", "cima" ou "baixo".
+   lado (opcional) = "direita", "esquerda", "cima" ou "baixo". Nas etapas,
+   grade/numeros/marcacoes/resposta ligam cada efeito; "resposta" (texto do
+   bloco) é digitada sobre a foto na etapa marcada com resposta: true.
+
+   Bloco "video": prévia simulada de Reels. cenas: [{ tempo: "0–2 s",
+   visual: "img/arquivo.svg", foco: "50% 80%", efeito: "zoom-in" | "zoom-out" |
+   "pan-esquerda" | "pan-direita", origem: "ia" | "loja", textoTela, audio }].
 
    Mensagens (dentro de chat/comparativo):
      { autor: "aluna" ou "assistente", texto: "…",
@@ -228,6 +234,29 @@ window.CONTEUDO = {
     ppDeTotal: "de {total}",
     ppLacuna: "próxima palavra",
     visaoEtapa: "Etapa {atual} de {total}",
+    visaoEnviando: "Enviando foto…",
+
+    /* Vídeo simulado */
+    videoPrevia: "Prévia simulada do vídeo",
+    videoTocar: "Assistir",
+    videoPausar: "Pausar",
+    videoRecomecar: "Recomeçar",
+    videoAviso: "Prévia simulada · sem áudio",
+    videoCenas: "Cenas do vídeo",
+    origem_ia: "Gerado com IA",
+    origem_loja: "Gravado na loja",
+
+    /* Busca (estudo) */
+    buscaRotulo: "Buscar no material",
+    buscaPlaceholder: "Buscar no material…",
+    buscaAtalho: "/",
+    buscaAbrir: "Abrir busca",
+    buscaFechar: "Fechar busca",
+    buscaResultados: "{n} resultados",
+    buscaUmResultado: "1 resultado",
+    buscaSemResultados: "Nada encontrado para “{q}”. Tente outra palavra.",
+    buscaDica: "Digite pelo menos 2 letras. Use ↑ ↓ e Enter para escolher.",
+    buscaInicioModulo: "Início do módulo",
 
     /* Prática */
     agoraTente: "Agora tente no Claude",
@@ -736,12 +765,15 @@ window.CONTEUDO = {
           titulo: "O que acontece quando você manda uma foto",
           src: "img/cafe-inverno.svg",
           alt: "Foto do Café de Inverno: pacote kraft com o rótulo “Café de Inverno”, xícara de café fumegante, pão de queijo, canela em pau e grãos de café sobre uma mesa de madeira, com luz de janela vindo da esquerda.",
-          nota: "É uma explicação simplificada, mas fiel: a imagem é quebrada em pedaços que viram números, assim como as palavras. Ele não “olha” como a gente. (Módulo 6: ~15 min)",
+          nota: "É uma explicação simplificada, mas fiel: a imagem é quebrada em pedaços que viram números, assim como as palavras. Ele não “olha” como a gente. Avance devagar: cada toque mostra uma parte do processo. (Módulo 6: ~15 min)",
+          arquivo: "cafe-inverno.jpg",
+          resposta: "Vejo um pacote kraft com o rótulo “Café de Inverno”, uma xícara de café quente com vapor, pão de queijo e canela em pau sobre uma mesa de madeira, com luz natural vindo da janela à esquerda.",
           etapas: [
             { titulo: "A foto chega inteira", texto: "Você anexa a imagem e escreve o pedido. Pro Claude, imagem e texto viram uma coisa só: o contexto da conversa." },
-            { titulo: "Ela vira pedacinhos", texto: "A imagem é dividida em pequenos quadrados. Cada pedaço vira uma sequência de números que o modelo sabe interpretar, do mesmo jeito que faz com as palavras.", grade: true },
+            { titulo: "Ela vira pedacinhos", texto: "A imagem é dividida em pequenos quadrados, como um mosaico.", grade: true },
+            { titulo: "Cada pedaço vira números", texto: "Cor, brilho, formas: tudo em cada quadrado é traduzido em números que o modelo sabe interpretar, do mesmo jeito que faz com as palavras.", grade: true, numeros: true },
             { titulo: "Ele junta as peças", texto: "Olhando os pedaços em conjunto, ele reconhece objetos, lê textos e percebe cores, luz e composição. Avance pra ver o que ele identifica.", grade: true, marcacoes: true },
-            { titulo: "E responde a partir disso", texto: "Tudo isso entra no raciocínio junto com o seu pedido. Por isso vale dizer **o que você quer que ele observe**: o rótulo, a luz, o enquadramento.", semGrade: true }
+            { titulo: "E responde a partir disso", texto: "Tudo isso entra no raciocínio junto com o seu pedido. Por isso vale dizer **o que você quer que ele observe**: o rótulo, a luz, o enquadramento.", semGrade: true, resposta: true }
           ],
           marcacoes: [
             { x: 20, y: 18, lado: "direita", rotulo: "Luz natural vindo da esquerda" },
@@ -1022,6 +1054,20 @@ window.CONTEUDO = {
                 }
               ]
             }
+          ]
+        },
+        {
+          tipo: "video",
+          titulo: "E o vídeo fica assim",
+          texto: "Prévia montada com as cenas do roteiro: as do cafezal geradas com IA, as da loja gravadas no celular. Clique numa cena para ir direto a ela.",
+          nota: "Deixe tocar uma vez inteira e depois volte cena a cena comentando: o que foi gerado, o que foi gravado e o texto na tela. Lembre que é uma simulação para visualizar o roteiro.",
+          alt: "Prévia simulada de um Reels vertical do Café de Inverno, do cafezal até a xícara, em cinco cenas.",
+          cenas: [
+            { tempo: "0–2 s", visual: "img/cafezal.svg", foco: "48% 92%", efeito: "zoom-in", origem: "ia", textoTela: "De onde vem o seu café?", audio: "Passarinhos e vento leve" },
+            { tempo: "2–5 s", visual: "img/cafezal.svg", foco: "30% 70%", efeito: "pan-direita", origem: "ia", textoTela: "Colhido à mão na serra", audio: "Entra um violão suave" },
+            { tempo: "5–9 s", visual: "img/torra.svg", foco: "52% 60%", efeito: "zoom-out", origem: "loja", textoTela: "Torra média, em pequenos lotes", audio: "Grãos estalando + violão" },
+            { tempo: "9–13 s", visual: "img/coador.svg", foco: "50% 55%", efeito: "zoom-in", origem: "loja", textoTela: "Chocolate e canela, sem aditivo", audio: "Violão continua" },
+            { tempo: "13–15 s", visual: "img/cafe-inverno.svg", foco: "45% 60%", efeito: "pan-esquerda", origem: "loja", textoTela: "Café de Inverno · só nesta estação", audio: "Violão termina num acorde" }
           ]
         },
         {

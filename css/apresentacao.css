@@ -496,6 +496,20 @@ body.com-notas .palco { margin-right: min(400px, 40vw); transition: margin .3s v
   .slide .pp-opcao { font-size: 1rem; grid-template-columns: 6.5em minmax(0, 1fr) 3.2em; gap: 8px; }
 }
 
+/* Vídeo simulado */
+.slide-video .slide-in { max-width: 1120px; }
+.video-lado { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: clamp(20px, 4vw, 64px); align-items: center; }
+.video-lado .vs-tela { width: auto; height: min(58vh, 560px); }
+.video-lado .vs-cenas { max-width: 520px; }
+/* Movimento sutil na imagem de abertura */
+.abertura-imagem img { animation: flutua-img 7s ease-in-out infinite alternate; }
+@keyframes flutua-img { from { transform: translateY(0); } to { transform: translateY(-8px); } }
+@media (max-width: 760px) {
+  .video-lado { grid-template-columns: minmax(0, 1fr); }
+  .video-lado .vs-player { order: -1; }
+  .video-lado .vs-tela { height: auto; width: min(260px, 72vw); }
+}
+
 /* Telas baixas: compacta os slides mais densos */
 @media (max-height: 760px) and (min-width: 761px) {
   .slide-cab { margin-bottom: 12px; }
@@ -510,6 +524,8 @@ body.com-notas .palco { margin-right: min(400px, 40vw); transition: margin .3s v
   .slide .pp-frase { font-size: clamp(1.4rem, 1rem + 1.8vw, 2.1rem); }
   .slide .pp-opcao { padding: 4px 12px; }
   .slide-visao .visao-foto img { max-height: 52vh; }
+  .video-lado .vs-tela { height: 50vh; }
+  .slide-video .vs-cena-btn { padding: 6px 10px; }
   .abertura.com-imagem .abertura-resumo { margin-bottom: 1rem; }
   .abertura.com-imagem .abertura-etapas li { padding: 3px 10px; font-size: .76rem; }
   .abertura-imagem img { max-height: 46vh; }
