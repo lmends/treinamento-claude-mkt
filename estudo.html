@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Estudo · Ambiente de Treinamento</title>
+  <meta name="description" content="Material de estudo do treinamento de IA para marketing, com conversas simuladas.">
+  <meta name="color-scheme" content="light dark">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/componentes.css">
+  <link rel="stylesheet" href="css/estudo.css">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%237A4A2A'/%3E%3Cpath d='M10 13h10v5a5 5 0 0 1-5 5 5 5 0 0 1-5-5z' fill='%23FAF9F7'/%3E%3Cpath d='M20 14h1.5a2.5 2.5 0 0 1 0 5H20' fill='none' stroke='%23FAF9F7' stroke-width='1.6'/%3E%3C/svg%3E">
+  <script src="js/content.js" defer></script>
+  <script src="js/comum.js" defer></script>
+  <script src="js/componentes.js" defer></script>
+  <script src="js/estudo.js" defer></script>
+</head>
+<body class="pagina-estudo">
+  <a class="skip-link" href="#conteudo-principal" id="pular"></a>
+
+  <header class="topbar">
+    <button class="icon-btn menu-btn" id="btn-menu" type="button" aria-controls="sidebar" aria-expanded="false">
+      <svg aria-hidden="true" viewBox="0 0 24 24" width="22" height="22"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <span class="sr-only" id="btn-menu-rotulo"></span>
+    </button>
+    <a class="brand" href="index.html" id="brand"></a>
+    <div class="topbar-progress" aria-live="polite">
+      <span id="progresso-texto" class="progress-text"></span>
+      <span class="progress-track" aria-hidden="true"><span id="progresso-barra" class="progress-fill"></span></span>
+    </div>
+    <div class="topbar-actions" id="topbar-acoes"></div>
+    <span class="reading-bar" aria-hidden="true"><span id="barra-leitura"></span></span>
+  </header>
+
+  <div class="layout">
+    <nav class="sidebar" id="sidebar" aria-labelledby="sidebar-titulo">
+      <h2 class="sidebar-title" id="sidebar-titulo"></h2>
+      <ol class="module-list" id="lista-modulos"></ol>
+      <p class="sidebar-hint" id="dica-teclado"></p>
+    </nav>
+    <div class="sidebar-backdrop" id="sidebar-backdrop" hidden></div>
+
+    <main class="main" id="conteudo-principal" tabindex="-1">
+      <article class="module" id="modulo"></article>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <noscript><p class="noscript">Este material precisa de JavaScript ativado para funcionar.</p></noscript>
+</body>
+</html>

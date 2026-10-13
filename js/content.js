@@ -12,13 +12,27 @@
    - Separe itens de uma lista [ … ] com vírgula. Cuidado com a vírgula do último item.
 
    Estrutura:
-   - interface: textos dos botões e avisos da tela.
-   - marca:     dados da marca fictícia usada nos artefatos.
-   - modulos:   lista de módulos. Cada módulo tem "blocos", exibidos em ordem.
+   - interface:    textos dos botões e avisos da tela.
+   - apresentacao: textos da capa do site e do primeiro slide.
+   - marca:        dados da marca fictícia usada nos artefatos.
+   - modulos:      lista de módulos. Cada módulo tem "blocos", exibidos em ordem.
 
-   Tipos de bloco: texto, destaque, cards, visao-geral, chat, comparativo,
+   Os MESMOS blocos alimentam as duas páginas:
+   - Estudo (estudo.html): cada bloco é uma seção da página do módulo.
+   - Apresentação (apresentacao.html): cada módulo ganha um slide de abertura
+     e cada bloco vira um slide.
+
+   Tipos de bloco: texto, destaque, frase, cards, visao-geral, chat, comparativo,
    projeto, skill, tabela, tour, pratica, links. Veja exemplos de cada um abaixo
    e no README.md.
+
+   Campos opcionais de qualquer bloco (só afetam os slides):
+     slide: { … }        campos que substituem os do bloco NOS SLIDES
+                         (ex.: um texto mais curto, ou até outro "tipo")
+     slide: false        o bloco aparece só no estudo
+     soNosSlides: true   o bloco aparece só nos slides
+     passoAPasso: true   itens (cards, linhas, instruções) entram um a um
+     nota: "…"           lembrete para o instrutor (tecla N na apresentação)
 
    Mensagens (dentro de chat/comparativo):
      { autor: "aluna" ou "assistente", texto: "…",
@@ -39,28 +53,80 @@ window.CONTEUDO = {
     nomeSite: "Ambiente de Treinamento",
     subtitulo: "IA para Marketing · Café Serra",
     pularParaConteudo: "Pular para o conteúdo",
+    voltarCapa: "Voltar à capa",
+    temaClaro: "Ativar tema claro",
+    temaEscuro: "Ativar tema escuro",
+    concluido: "concluído",
+
+    /* Capa (index.html) */
+    capaApresentarTitulo: "Apresentar",
+    capaApresentarTexto: "Slides em tela cheia para conduzir o treinamento, com conversas animadas e resultados aparecendo ao vivo.",
+    capaEstudarTitulo: "Estudar",
+    capaEstudarTexto: "Material de consulta para revisar no seu ritmo, com conversas completas, notas do instrutor e prompts para copiar.",
+    comecar: "Começar",
+    continuarSlide: "Continuar do slide {n}",
+    continuarModulo: "Continuar em “{titulo}”",
+    capaModulosTitulo: "Os 7 módulos",
+    capaProgresso: "{n} de {total} módulos concluídos",
+    capaAbrirSlides: "Apresentar o módulo {n}",
+    capaAtalhosTitulo: "Atalhos da apresentação",
+    capaAtalhos: "[→] ou [Espaço] avança · [←] volta · [O] visão geral · [N] notas · [F] tela cheia · [B] tela preta · [1]–[7] módulos",
+
+    /* Apresentação (apresentacao.html) */
+    deckRotulo: "Apresentação em slides",
+    slideRotulo: "slide",
+    anuncioSlide: "Slide {atual} de {total}: {titulo}",
+    contadorSlides: "{atual} / {total}",
+    moduloDeTotal: "Módulo {n} de {total}",
+    capaDeck: "Capa",
+    aberturaModulo: "Abertura",
+    slideAnteriorDeck: "Voltar",
+    proximoSlideDeck: "Avançar",
+    visaoGeral: "Visão geral dos slides",
+    notas: "Notas do instrutor",
+    semNotas: "Nenhuma nota para este slide.",
+    telaCheia: "Tela cheia",
+    sairTelaCheia: "Sair da tela cheia",
+    telaPreta: "Tela em pausa. Pressione qualquer tecla para voltar.",
+    fechar: "Fechar",
+    resultado: "Resultado",
+    resultadoVazio: "O resultado aparece aqui quando a resposta terminar.",
+    dicaAvancar: "[→] ou [Espaço] para avançar",
+    dicaComecar: "Pressione [→] para começar · [F] para tela cheia",
+    dicaComecarToque: "Deslize para o lado ou toque em › para avançar",
+    progressoDeck: "Progresso por módulo",
+    irParaModulo: "Ir para o módulo {n}: {titulo}",
+    estudarEsteModulo: "Estudar este módulo",
+
+    /* Estudo (estudo.html) */
     tituloModulos: "Módulos",
     navegacaoModulos: "Navegação entre módulos",
-    dicaTeclado: "Atalhos: [←] [→] trocam de módulo · [Espaço] ou [Enter] avançam a conversa · [Esc] fecha painéis",
+    dicaTeclado: "Atalhos: [←] [→] trocam de módulo",
     moduloN: "Módulo {n}",
     moduloDe: "Módulo {atual} de {total}",
     anterior: "Anterior",
     proximo: "Próximo",
     abrirMenu: "Abrir lista de módulos",
+    nestaPagina: "Nesta página",
+    tempoLeitura: "~{n} min de leitura",
+    apresentarModulo: "Apresentar este módulo",
+    apresentarCurto: "Slides",
+    verAnimacao: "Ver animação",
+    mostrarTudo: "Mostrar tudo",
+    concluirModulo: "Concluí este módulo",
+    moduloConcluido: "Módulo concluído",
+    desmarcarConcluido: "Clique para desmarcar",
+    marcadoConcluido: "Módulo marcado como concluído.",
+    proximoModulo: "Próximo módulo",
+    moduloAnterior: "Módulo anterior",
+    fimTreinamentoTitulo: "Você chegou ao fim do treinamento!",
+    fimTreinamentoTexto: "Volte sempre que quiser revisar. Os prompts de prática estão no fim de cada módulo.",
+    progressoLeitura: "Progresso de leitura",
+    concluidosN: "{n} concluídos",
 
-    rotuloModo: "Modo de uso",
-    modoApresentacao: "Apresentação",
-    modoEstudo: "Estudo",
-    dicaModoApresentacao: "As conversas avançam a cada clique ou tecla",
-    dicaModoEstudo: "Conversas completas, com notas do instrutor visíveis",
-    avisoModoEstudo: "Modo estudo: conversas completas e notas visíveis.",
-    avisoModoApresentacao: "Modo apresentação: avance com Espaço ou no botão Avançar.",
-    temaClaro: "Ativar tema claro",
-    temaEscuro: "Ativar tema escuro",
-
+    /* Conversas */
     conversa: "Conversa simulada",
     mensagens: "Mensagens",
-    dicaChat: "Pressione [Espaço] ou clique em Avançar para começar a conversa.",
     avancar: "Avançar",
     concluirMensagem: "Concluir mensagem",
     pularAnimacao: "Pular animação",
@@ -82,10 +148,10 @@ window.CONTEUDO = {
     depois: "Depois",
     comparativo: "Comparativo antes e depois",
 
+    /* Artefatos */
     artefato: "Artefato",
-    abrirArtefato: "abrir no painel",
+    verArtefato: "ver resultado",
     artefatosGerados: "Artefatos gerados",
-    fecharPainel: "Fechar painel",
     copiarTexto: "Copiar texto",
     copiado: "Texto copiado!",
     erroCopiar: "Não foi possível copiar automaticamente. Selecione o texto e use Ctrl+C.",
@@ -108,6 +174,7 @@ window.CONTEUDO = {
     emailAssunto: "Assunto",
     emailPre: "Pré-cabeçalho",
 
+    /* Projeto, Skill, tabela, tour */
     projeto: "Projeto",
     instrucoesProjeto: "Instruções do projeto",
     arquivosConhecimento: "Arquivos de conhecimento",
@@ -121,20 +188,28 @@ window.CONTEUDO = {
     interfaceSimulada: "Interface simulada do assistente",
     tourTitulo: "Tour guiado",
     tourIntroTitulo: "Vamos conhecer a tela?",
-    tourIntroTexto: "Clique em **Iniciar tour** (ou pressione Espaço) para destacar, um por vez, os quatro pontos principais da interface.",
+    tourIntroTexto: "Avance para destacar, um por vez, os quatro pontos principais da interface.",
     tourPasso: "Destaque {atual} de {total}",
-    tourIniciar: "Iniciar tour",
-    tourProximo: "Próximo destaque",
-    tourAnterior: "Voltar",
-    tourRecomecar: "Recomeçar",
 
+    /* Prática */
     agoraTente: "Agora tente no Claude",
     copiarPrompt: "Copiar prompt",
     promptCopiado: "Prompt copiado! Agora cole no Claude.",
     abrirClaude: "Abrir o Claude",
     novaAba: "(abre em nova aba)",
 
-    blocoDesconhecido: "Bloco desconhecido"
+    blocoDesconhecido: "Bloco desconhecido",
+    erroConteudo: "Erro: js/content.js não foi carregado ou não tem módulos."
+  },
+
+  /* ------------------------------------------------------------------
+     Capa do site e primeiro slide da apresentação
+     ------------------------------------------------------------------ */
+  apresentacao: {
+    kicker: "Ambiente de Treinamento",
+    titulo: "IA para Marketing",
+    subtitulo: "Um treinamento prático para criar conteúdo com um assistente de IA, usando a Café Serra, uma marca fictícia.",
+    rodape: "Simulação: nenhuma IA real é chamada neste material. Para praticar de verdade, use o Claude."
   },
 
   /* ------------------------------------------------------------------
@@ -162,11 +237,18 @@ window.CONTEUDO = {
           tipo: "destaque",
           icone: "☕",
           titulo: "O objetivo de hoje",
+          slide: {
+            tipo: "frase",
+            texto: "Usar a IA como uma **colega de criação**.",
+            apoio: "Rascunhos em segundos, ideias novas e cada texto no formato certo, do jeito da sua marca."
+          },
+          nota: "Combine as expectativas: tudo aqui é simulado, com a marca fictícia Café Serra. No fim de cada módulo ela pratica no Claude de verdade.",
           texto: "Sair daqui usando um assistente de IA como uma **colega de criação**: alguém que escreve rascunhos em segundos, sugere ideias, adapta textos para cada formato e segue o jeito da sua marca.\n\nTudo o que você vai ver aqui é uma **simulação**, com uma marca fictícia, a **Café Serra**. No fim de cada módulo, você pratica no Claude de verdade."
         },
         {
           tipo: "cards",
           titulo: "Você vai sair sabendo…",
+          nota: "Pergunte qual destes itens ela mais quer dominar e dê ênfase a ele ao longo da hora.",
           itens: [
             { icone: "✍️", titulo: "Pedir bem", texto: "Escrever pedidos (os famosos *prompts*) que geram bons textos logo de primeira." },
             { icone: "🔁", titulo: "Ajustar sem recomeçar", texto: "Iterar: \"deixa mais curto\", \"muda o tom\", \"faz três versões\"." },
@@ -178,14 +260,16 @@ window.CONTEUDO = {
         },
         {
           tipo: "visao-geral",
-          titulo: "Roteiro do treinamento"
+          titulo: "Roteiro do treinamento",
+          nota: "Cerca de 8 minutos por módulo. Os módulos 3, 5 e 6 são os mais práticos."
         },
         {
           tipo: "destaque",
           icone: "🧭",
           cor: "verde",
           titulo: "Como usar este material",
-          texto: "- **Modo apresentação** (padrão): as conversas avançam a cada clique em *Avançar* ou ao pressionar **Espaço**.\n- **Modo estudo**: as conversas aparecem completas, com as notas do instrutor visíveis. Ideal para revisar depois.\n- Use as **setas ← →** do teclado para trocar de módulo. O material lembra onde você parou."
+          slide: false,
+          texto: "- Nesta página de **estudo**, as conversas aparecem completas, com as notas do instrutor visíveis. Clique em **Ver animação** para assistir a qualquer conversa acontecendo.\n- Os resultados (carrosséis, legendas, e-mails) aparecem logo abaixo das respostas, com botão para copiar.\n- Use as **setas ← →** do teclado para trocar de módulo e marque **Concluí este módulo** ao terminar. O material lembra onde você parou."
         }
       ]
     },
@@ -200,11 +284,24 @@ window.CONTEUDO = {
         {
           tipo: "texto",
           titulo: "O que é o Claude?",
+          slide: {
+            tipo: "cards",
+            texto: "Um assistente de IA com quem você conversa em linguagem natural, como numa troca de mensagens.",
+            passoAPasso: true,
+            itens: [
+              { icone: "💬", titulo: "Conversa", texto: "Sem comando secreto: você explica, ele responde." },
+              { icone: "✍️", titulo: "Escreve", texto: "Posts, e-mails, roteiros e revisões." },
+              { icone: "📎", titulo: "Analisa arquivos", texto: "PDFs, planilhas e imagens que você envia." },
+              { icone: "🌐", titulo: "Pesquisa", texto: "Informações atualizadas na internet." }
+            ]
+          },
+          nota: "Reforce: não existe jeito certo de falar com a IA. É uma conversa.",
           texto: "O Claude é um **assistente de IA** com quem você conversa em linguagem natural, como numa troca de mensagens. Ele **escreve** (posts, e-mails, roteiros), **revisa** textos, **analisa arquivos** que você envia (PDFs, planilhas, imagens) e pode **pesquisar** na internet para trazer informações atualizadas.\n\nNão existe comando secreto: você explica o que precisa, ele responde, e vocês vão ajustando juntos."
         },
         {
           tipo: "tour",
           titulo: "Tour pela interface",
+          nota: "Se possível, mostre a mesma tela no Claude real logo depois do tour.",
           texto: "A tela abaixo é uma simulação simplificada. Os nomes e a disposição podem mudar um pouco no aplicativo real, mas os conceitos são os mesmos.",
           interfaceSimulada: {
             nomeApp: "Assistente de IA",
@@ -254,6 +351,11 @@ window.CONTEUDO = {
           tipo: "destaque",
           icone: "🤝",
           titulo: "Pense numa colega muito rápida",
+          slide: {
+            tipo: "frase",
+            texto: "Uma colega talentosa e rapidíssima, que ainda **não conhece a sua marca**.",
+            apoio: "Quanto melhor o briefing, melhor o resultado. É isso que vamos treinar agora."
+          },
           texto: "Imagine uma colega talentosa, que escreve muito rápido, mas acabou de chegar e **não conhece a sua marca**. Quanto melhor o briefing que você der, melhor o resultado. É exatamente isso que vamos treinar no próximo módulo."
         }
       ]
@@ -269,6 +371,7 @@ window.CONTEUDO = {
         {
           tipo: "comparativo",
           titulo: "O mesmo pedido, de dois jeitos",
+          nota: "Antes de avançar o \"Depois\", pergunte: o que você mudaria no pedido para melhorar o resultado?",
           texto: "Avance as duas conversas e compare as respostas.",
           antes: {
             rotulo: "Antes",
@@ -306,6 +409,7 @@ window.CONTEUDO = {
         {
           tipo: "cards",
           titulo: "Os 4 princípios de um bom pedido",
+          passoAPasso: true,
           itens: [
             { icone: "🧭", titulo: "1. Dê contexto", texto: "Quem é a marca, para quem é o conteúdo e qual o objetivo. A IA não sabe nada que você não contar." },
             { icone: "🎯", titulo: "2. Seja específico", texto: "Formato, tamanho, tom, CTA, número de hashtags. O que não for dito, a IA vai adivinhar." },
@@ -318,11 +422,13 @@ window.CONTEUDO = {
           icone: "🧪",
           cor: "verde",
           titulo: "Fórmula de bolso",
+          nota: "Peça para ela identificar cada parte da fórmula no prompt do \"Depois\".",
           texto: "**Contexto** + **Tarefa** + **Público** + **Objetivo** + **Tom** + **Formato** + **Exemplo**\n\nNão precisa usar todos sempre. Mas, se a resposta veio genérica, provavelmente faltou algum."
         },
         {
           tipo: "chat",
           tituloBloco: "Iterar: ajuste em vez de recomeçar",
+          nota: "Mostre que a conversa continua: nada de abrir uma conversa nova para cada ajuste.",
           titulo: "Continuação da conversa do \"Depois\"",
           contexto: "Mesma conversa: a IA lembra de tudo o que já foi dito.",
           mensagens: [
@@ -364,11 +470,17 @@ window.CONTEUDO = {
         {
           tipo: "texto",
           titulo: "O problema",
+          slide: {
+            tipo: "frase",
+            texto: "Toda conversa nova começa **do zero**.",
+            apoio: "O Projeto guarda as instruções e os arquivos de um trabalho. Toda conversa criada dentro dele já começa sabendo o contexto."
+          },
           texto: "Toda conversa nova começa do zero. Explicar o tom de voz, o público e os produtos a cada pedido cansa e gera resultados inconsistentes.\n\nO **Projeto** resolve isso: é um espaço que guarda as **instruções** e os **arquivos** de um trabalho. Toda conversa criada dentro dele já começa sabendo o contexto."
         },
         {
           tipo: "projeto",
           titulo: "Por dentro de um Projeto",
+          nota: "Destaque que as instruções são texto comum, escrito como um briefing para uma pessoa nova na equipe.",
           nome: "Café Serra – Conteúdo",
           descricao: "Redes sociais, e-mail e blog da Café Serra.",
           instrucoes: "Você é redator(a) da Café Serra, cafeteria e torrefação artesanal mineira.\n\n- **Público:** adultos de 25 a 45 anos que valorizam café especial e produção local.\n- **Tom de voz:** acolhedor, próximo, com toques de mineiridade, sem exageros.\n- Frases curtas. Evite jargão técnico de barista.\n- **Produtos:** Café de Inverno, Coado da Casa, Kit Presente.\n- Termine sempre com um convite claro (CTA).\n- Consulte os arquivos do projeto antes de responder.",
@@ -383,6 +495,7 @@ window.CONTEUDO = {
         {
           tipo: "chat",
           tituloBloco: "Conversando dentro do Projeto",
+          nota: "Compare com o prompt longo do Módulo 3: aqui o pedido é curto porque o contexto já está no Projeto.",
           titulo: "Nova conversa",
           contexto: "📁 Dentro do Projeto: Café Serra – Conteúdo",
           mensagens: [
@@ -434,6 +547,11 @@ window.CONTEUDO = {
           icone: "📁",
           cor: "verde",
           titulo: "Resumindo",
+          slide: {
+            tipo: "frase",
+            texto: "Projeto guarda o **contexto** de um trabalho.",
+            apoio: "Quem somos, para quem falamos e como falamos."
+          },
           texto: "**Projeto guarda o *contexto* de um trabalho:** quem somos, para quem falamos e como falamos."
         },
         {
@@ -454,11 +572,18 @@ window.CONTEUDO = {
         {
           tipo: "texto",
           titulo: "O que é uma Skill?",
+          slide: {
+            tipo: "frase",
+            texto: "Se o Projeto guarda o **contexto**, a Skill guarda um **procedimento**.",
+            apoio: "Ela é carregada automaticamente quando a tarefa aparece e funciona em qualquer conversa."
+          },
           texto: "Se o Projeto guarda o **contexto**, a **Skill** guarda um **procedimento**: um pacote de instruções que ensina a IA a fazer uma tarefa específica do jeito certo, sempre igual.\n\nA Skill é **carregada automaticamente** quando a tarefa aparece na conversa e funciona **em qualquer conversa**, dentro ou fora de um Projeto."
         },
         {
           tipo: "tabela",
           titulo: "Projeto × Skill",
+          passoAPasso: true,
+          nota: "A analogia final costuma fixar o conceito: a pasta do cliente × a receita da casa.",
           colunas: ["", "Projeto", "Skill"],
           linhas: [
             ["O que guarda", "**Contexto**: quem é a marca, tom, arquivos", "**Procedimento**: o passo a passo de uma tarefa"],
@@ -471,6 +596,8 @@ window.CONTEUDO = {
         {
           tipo: "skill",
           titulo: "Como uma Skill se parece",
+          passoAPasso: true,
+          nota: "Leia as instruções em voz alta: são as regras que ela já explica toda semana.",
           texto: "Uma Skill é, no fundo, um arquivo de texto com nome, descrição e instruções. A **descrição** é o que faz a IA lembrar de usá-la na hora certa.",
           nome: "carrossel-cafe-serra",
           descricao: "Use ao criar carrosséis de Instagram para a Café Serra.",
@@ -486,6 +613,7 @@ window.CONTEUDO = {
         {
           tipo: "chat",
           tituloBloco: "Criando a Skill com a ajuda da IA",
+          nota: "Ponto-chave: ela não precisa saber o formato técnico. A IA entrevista e monta.",
           titulo: "Conversa: criar uma skill",
           mensagens: [
             {
@@ -512,6 +640,7 @@ window.CONTEUDO = {
         {
           tipo: "chat",
           tituloBloco: "Dias depois, numa conversa nova…",
+          nota: "Peça para ela conferir as regras da Skill no carrossel: 7 slides, gancho curto, CTA no final, 3 hashtags.",
           titulo: "Nova conversa",
           contexto: "💬 Conversa nova, fora do Projeto",
           mensagens: [
@@ -559,6 +688,11 @@ window.CONTEUDO = {
           icone: "🧩",
           cor: "verde",
           titulo: "Regra de bolso",
+          slide: {
+            tipo: "frase",
+            texto: "Explicou as mesmas instruções **três vezes**?",
+            apoio: "Está na hora de virar uma Skill."
+          },
           texto: "Explicou as mesmas instruções **três vezes**? Está na hora de virar uma Skill."
         },
         {
@@ -578,11 +712,18 @@ window.CONTEUDO = {
       blocos: [
         {
           tipo: "texto",
+          slide: {
+            tipo: "frase",
+            icone: "♻️",
+            texto: "Um bom texto rende **muitos**.",
+            apoio: "Artigos, apresentações e roteiros antigos viram várias peças, cada uma no formato certo."
+          },
           texto: "Você já tem conteúdo bom espalhado por aí: artigos do blog, apresentações, roteiros antigos. Com a IA, um único material vira várias peças, **cada uma no formato certo**, em minutos."
         },
         {
           tipo: "chat",
           tituloBloco: "Um artigo, três formatos",
+          nota: "Quando os resultados aparecerem, navegue pelas abas: carrossel, legendas e e-mail.",
           titulo: "Nova conversa",
           contexto: "📁 Dentro do Projeto: Café Serra – Conteúdo",
           mensagens: [
@@ -684,6 +825,8 @@ window.CONTEUDO = {
         {
           tipo: "cards",
           titulo: "Antes de publicar",
+          passoAPasso: true,
+          nota: "Pergunte qual é a política da empresa dela para dados de clientes.",
           itens: [
             { icone: "🔎", titulo: "Confira dados e números", texto: "A IA pode errar ou inventar informações com toda a confiança. Estatísticas, datas, preços e nomes: **sempre confira na fonte**." },
             { icone: "✅", titulo: "Revise como editora", texto: "O texto final é seu. A voz da marca é sua responsabilidade: leia em voz alta, ajuste e corte o que não soa como vocês." },
@@ -702,6 +845,7 @@ window.CONTEUDO = {
           icone: "🏆",
           cor: "verde",
           titulo: "Desafio da semana",
+          nota: "Combine uma data para ela mostrar a primeira Skill criada.",
           texto: "- **Todo dia:** use o Claude em uma tarefa real do seu trabalho (uma legenda, uma revisão, um brainstorm).\n- **Até sexta:** escolha uma tarefa repetitiva e transforme em uma Skill.\n- **Bônus:** crie o Projeto da sua marca com o guia de tom de voz e 2 ou 3 posts de referência."
         },
         {
@@ -717,7 +861,12 @@ window.CONTEUDO = {
           tipo: "destaque",
           icone: "☕",
           titulo: "Obrigado!",
-          texto: "Este material continua disponível para consulta. Volte quando quiser, use o **modo estudo** para rever as conversas com as notas e copie os prompts de prática sempre que precisar."
+          slide: {
+            tipo: "frase",
+            texto: "Obrigado!",
+            apoio: "Este material continua disponível para consulta, com todas as conversas, notas e prompts de prática."
+          },
+          texto: "Este material continua disponível para consulta. Volte quando quiser à página de **estudo** para rever as conversas com as notas e copie os prompts de prática sempre que precisar."
         }
       ]
     }

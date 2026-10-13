@@ -1,0 +1,100 @@
+/* ==========================================================================
+   Ambiente de Treinamento — capa
+   ========================================================================== */
+
+body.pagina-inicio { min-height: 100vh; overflow-x: hidden; position: relative; }
+
+.inicio-fundo { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
+.inicio-fundo .bolha { position: absolute; border-radius: 50%; filter: blur(80px); opacity: .5; animation: deriva 20s ease-in-out infinite alternate; }
+.inicio-fundo .b1 { width: 52vmax; height: 52vmax; left: -14vmax; top: -18vmax; background: var(--blob-1); }
+.inicio-fundo .b2 { width: 44vmax; height: 44vmax; right: -16vmax; bottom: -16vmax; background: var(--blob-2); animation-duration: 26s; }
+@keyframes deriva { to { transform: translate(4vmax, 3vmax) scale(1.08); } }
+
+.inicio-topo {
+  max-width: 1080px; margin: 0 auto; padding: 18px 20px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.inicio-marca { display: inline-flex; align-items: center; gap: 10px; font-size: .95rem; }
+
+.inicio { max-width: 1080px; margin: 0 auto; padding: 0 20px 40px; }
+
+/* Herói */
+.heroi { text-align: center; padding: clamp(28px, 8vh, 80px) 0 clamp(28px, 6vh, 56px); animation: sobe-i .7s var(--ease) both; }
+.heroi-kicker { font-size: .82rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+.heroi-titulo {
+  font-size: clamp(2.6rem, 1.2rem + 6vw, 5.2rem); font-weight: 800; letter-spacing: -.045em; line-height: 1.02;
+  margin: 0 0 18px; padding-bottom: .1em;
+  background: linear-gradient(120deg, var(--text) 30%, var(--accent) 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.heroi-sub { font-size: clamp(1.02rem, .9rem + .5vw, 1.25rem); color: var(--text-2); max-width: 48ch; margin: 0 auto; text-wrap: balance; }
+@keyframes sobe-i { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+
+/* Caminhos */
+.modos { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 56px; }
+.modo {
+  position: relative; padding: 28px; border-radius: 22px; overflow: hidden;
+  background: color-mix(in srgb, var(--surface) 92%, transparent); border: 1px solid var(--border); box-shadow: var(--shadow);
+  display: flex; flex-direction: column; gap: 6px;
+  animation: sobe-i .7s var(--ease) both; animation-delay: .1s;
+  transition: transform .3s var(--ease), box-shadow .3s;
+}
+.modo + .modo { animation-delay: .18s; }
+.modo:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+.modo-ico { width: 52px; height: 52px; border-radius: 16px; display: grid; place-items: center; margin-bottom: 10px; }
+.modo-apresentar .modo-ico { background: var(--accent); color: var(--on-accent); }
+.modo-estudar .modo-ico { background: var(--green); color: var(--surface); }
+.modo h2 { font-size: 1.5rem; font-weight: 800; letter-spacing: -.02em; margin: 0; }
+.modo p { color: var(--text-2); margin: 0 0 14px; }
+.modo-acoes { margin-top: auto; display: flex; flex-wrap: wrap; gap: 8px; }
+.modo-acoes .btn { white-space: normal; text-align: left; }
+.modo-estudar .btn-primary { background: var(--green); border-color: var(--green); color: var(--surface); }
+.modo-estudar .btn-primary:hover { background: color-mix(in srgb, var(--green) 85%, #000); border-color: transparent; color: var(--surface); }
+
+/* Módulos */
+.modulos-cab { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+.modulos-cab h2 { font-size: 1.35rem; font-weight: 800; letter-spacing: -.02em; margin: 0; }
+.modulos-progresso { display: inline-flex; align-items: center; gap: 10px; margin: 0; font-size: .88rem; color: var(--text-2); }
+.mini-barra { width: 120px; height: 6px; border-radius: 9px; background: var(--surface-3); overflow: hidden; }
+.mini-barra span { display: block; height: 100%; background: var(--green); border-radius: 9px; }
+.modulos-lista { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.modulos-lista li + li { margin: 0; }
+.mod {
+  display: flex; align-items: stretch; border-radius: 16px; overflow: hidden;
+  background: color-mix(in srgb, var(--surface) 92%, transparent); border: 1px solid var(--border);
+  animation: sobe-i .6s var(--ease) both; animation-delay: calc(.25s + var(--i, 0) * 50ms);
+  transition: border-color var(--dur), transform var(--dur);
+}
+.mod:hover { border-color: var(--accent); transform: translateY(-2px); }
+.mod-link { flex: 1; min-width: 0; display: flex; gap: 14px; align-items: center; padding: 14px 16px; color: var(--text); text-decoration: none; }
+.mod-link:hover { color: var(--text); }
+.mod-num {
+  flex: none; width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center;
+  font-weight: 800; font-size: .9rem; color: var(--accent); background: var(--accent-soft); font-variant-numeric: tabular-nums;
+}
+.mod.is-done .mod-num { color: var(--green); background: var(--green-soft); }
+.mod-texto { display: flex; flex-direction: column; line-height: 1.35; min-width: 0; }
+.mod-texto strong { font-size: 1rem; }
+.mod-texto span { font-size: .86rem; color: var(--text-2); }
+.mod-slides {
+  flex: none; width: 52px; display: grid; place-items: center; color: var(--text-2);
+  border-left: 1px solid var(--border); text-decoration: none;
+}
+.mod-slides:hover { color: var(--accent); background: var(--accent-soft); }
+
+/* Rodapé */
+.inicio-rodape { max-width: 1080px; margin: 0 auto; padding: 8px 20px 40px; display: grid; gap: 10px; }
+.atalhos { padding: 16px 18px; border-radius: 16px; border: 1px dashed var(--border-strong); }
+.atalhos h2 { font-size: .78rem; text-transform: uppercase; letter-spacing: .08em; color: var(--text-2); margin-bottom: 6px; }
+.atalhos p { margin: 0; font-size: .9rem; line-height: 2; }
+.aviso-sim { font-size: .82rem; color: var(--text-2); text-align: center; margin: 8px 0 0; }
+
+@media (max-width: 760px) {
+  .modos, .modulos-lista { grid-template-columns: minmax(0, 1fr); }
+  .modo { padding: 22px; }
+  .modos { margin-bottom: 40px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .inicio-fundo .bolha { animation: none !important; }
+}
