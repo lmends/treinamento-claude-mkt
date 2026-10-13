@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <defs>
+    <linearGradient id="parede" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FBF1E2"/>
+      <stop offset="1" stop-color="#E8D3B8"/>
+    </linearGradient>
+    <linearGradient id="bule" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#E9EEF0"/>
+      <stop offset=".5" stop-color="#C7D0D5"/>
+      <stop offset="1" stop-color="#97A3AA"/>
+    </linearGradient>
+    <linearGradient id="pano" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#F7EEDF"/>
+      <stop offset="1" stop-color="#E2D2BA"/>
+    </linearGradient>
+    <linearGradient id="esmalte" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#DCD6CC"/>
+    </linearGradient>
+    <filter id="blur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="16"/></filter>
+    <filter id="vapor" x="-50%" y="-20%" width="200%" height="140%"><feGaussianBlur stdDeviation="3"/></filter>
+  </defs>
+  <rect width="800" height="600" fill="url(#parede)"/>
+  <!-- Raio de luz da manhã -->
+  <polygon points="520,0 800,0 800,260 380,600 200,600" fill="#FFF3D6" opacity=".55" filter="url(#blur)"/>
+  <!-- Azulejos -->
+  <g stroke="#E2CFB4" stroke-width="2" opacity=".7">
+    <line x1="0" y1="120" x2="800" y2="120"/><line x1="0" y1="220" x2="800" y2="220"/><line x1="0" y1="320" x2="800" y2="320"/>
+    <line x1="100" y1="0" x2="100" y2="420"/><line x1="200" y1="0" x2="200" y2="420"/><line x1="300" y1="0" x2="300" y2="420"/>
+    <line x1="400" y1="0" x2="400" y2="420"/><line x1="500" y1="0" x2="500" y2="420"/><line x1="600" y1="0" x2="600" y2="420"/><line x1="700" y1="0" x2="700" y2="420"/>
+  </g>
+  <!-- Bancada -->
+  <rect y="420" width="800" height="180" fill="#8E6544"/>
+  <rect y="414" width="800" height="10" fill="#A97E57"/>
+
+  <!-- Bule pingando (chaleira) -->
+  <g transform="translate(510 120) rotate(-28)">
+    <path d="M0 40 C0 10 120 10 120 40 L128 130 C128 150 -8 150 -8 130 Z" fill="url(#bule)"/>
+    <ellipse cx="60" cy="40" rx="60" ry="12" fill="#DDE3E6"/>
+    <path d="M-6 70 C-60 70 -80 40 -110 20" fill="none" stroke="#B9C3C9" stroke-width="12" stroke-linecap="round"/>
+    <path d="M120 50 C170 50 172 120 124 118" fill="none" stroke="#2E3532" stroke-width="10"/>
+    <rect x="44" y="18" width="32" height="10" rx="5" fill="#2E3532"/>
+  </g>
+  <!-- Fio de água -->
+  <path d="M409 200 C405 230 404 250 404 276" fill="none" stroke="#9CC3D6" stroke-width="5" stroke-linecap="round" opacity=".85"/>
+
+  <!-- Coador de pano -->
+  <path d="M300 276 L500 276" stroke="#7A4A2A" stroke-width="6" stroke-linecap="round"/>
+  <path d="M304 276 C260 272 236 256 206 240" fill="none" stroke="#6B4329" stroke-width="14" stroke-linecap="round"/>
+  <path d="M310 278 L490 278 L420 392 C412 404 388 404 380 392 Z" fill="url(#pano)"/>
+  <path d="M330 278 C360 330 380 360 398 398" fill="none" stroke="#D8C5A8" stroke-width="3"/>
+  <path d="M470 278 C440 330 420 360 404 398" fill="none" stroke="#D8C5A8" stroke-width="3"/>
+  <path d="M360 282 C380 300 420 300 440 282" fill="#7A4A2A" opacity=".55"/>
+  <!-- Gota -->
+  <path d="M400 402 C396 410 404 410 400 402 Z M400 406 L400 416" stroke="#5A3420" stroke-width="5" stroke-linecap="round"/>
+
+  <!-- Bule de esmalte -->
+  <ellipse cx="400" cy="560" rx="120" ry="16" fill="#3A2112" opacity=".3" filter="url(#vapor)"/>
+  <path d="M310 440 L490 440 L500 540 C500 556 300 556 300 540 Z" fill="url(#esmalte)"/>
+  <ellipse cx="400" cy="440" rx="90" ry="14" fill="#F4F0EA"/>
+  <ellipse cx="400" cy="442" rx="78" ry="9" fill="#4A2C1A"/>
+  <path d="M310 470 C266 470 262 520 306 522" fill="none" stroke="#D6CFC4" stroke-width="12" stroke-linecap="round"/>
+  <path d="M300 520 L500 520" stroke="#35624A" stroke-width="10"/>
+  <path d="M304 470 L496 470" stroke="#35624A" stroke-width="4" opacity=".8"/>
+
+  <!-- Xícara ao lado -->
+  <ellipse cx="640" cy="548" rx="70" ry="12" fill="#E9DFD2"/>
+  <path d="M590 486 L690 486 C686 530 670 544 640 544 C610 544 594 530 590 486 Z" fill="#F6EFE6"/>
+  <ellipse cx="640" cy="486" rx="50" ry="10" fill="#FBF6EF"/>
+  <ellipse cx="640" cy="488" rx="43" ry="7" fill="#4A2C1A"/>
+  <path d="M688 498 C716 498 716 528 684 526" fill="none" stroke="#F6EFE6" stroke-width="9" stroke-linecap="round"/>
+  <g fill="none" stroke="#FFFFFF" stroke-width="4" opacity=".75" stroke-linecap="round" filter="url(#vapor)">
+    <path d="M626 470 C616 450 636 440 626 420"/><path d="M652 470 C642 450 662 440 652 420"/>
+  </g>
+</svg>

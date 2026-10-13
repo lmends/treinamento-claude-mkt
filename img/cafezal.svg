@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <defs>
+    <linearGradient id="ceu" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F2C9A0"/>
+      <stop offset=".55" stop-color="#F8E3C8"/>
+      <stop offset="1" stop-color="#EDE6D2"/>
+    </linearGradient>
+    <linearGradient id="m1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9DB3B5"/><stop offset="1" stop-color="#B9C6BE"/></linearGradient>
+    <linearGradient id="m2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6F8F86"/><stop offset="1" stop-color="#8CA596"/></linearGradient>
+    <linearGradient id="m3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4E7560"/><stop offset="1" stop-color="#5F8468"/></linearGradient>
+    <linearGradient id="terra" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8E6A45"/><stop offset="1" stop-color="#6B4A2E"/></linearGradient>
+    <filter id="nevoa" x="-20%" y="-50%" width="140%" height="200%"><feGaussianBlur stdDeviation="12"/></filter>
+  </defs>
+  <rect width="800" height="600" fill="url(#ceu)"/>
+  <circle cx="590" cy="170" r="46" fill="#FFF1CF"/>
+  <circle cx="590" cy="170" r="80" fill="#FFF1CF" opacity=".35"/>
+  <path d="M0 270 L90 210 L170 250 L260 180 L360 240 L450 196 L560 252 L650 214 L800 262 L800 600 L0 600 Z" fill="url(#m1)"/>
+  <ellipse cx="400" cy="290" rx="460" ry="30" fill="#FFFFFF" opacity=".45" filter="url(#nevoa)"/>
+  <path d="M0 320 L120 262 L230 300 L330 252 L470 310 L580 270 L700 300 L800 280 L800 600 L0 600 Z" fill="url(#m2)"/>
+  <path d="M0 372 L140 330 L300 368 L470 336 L620 370 L800 340 L800 600 L0 600 Z" fill="url(#m3)"/>
+
+  <!-- Casinha -->
+  <g transform="translate(520 330)">
+    <rect width="54" height="34" fill="#F4EDE2"/>
+    <path d="M-6 2 L27 -20 L60 2 Z" fill="#B4572B"/>
+    <rect x="22" y="14" width="10" height="20" fill="#7A4A2A"/>
+    <rect x="6" y="10" width="10" height="9" fill="#7FA4B0"/><rect x="38" y="10" width="10" height="9" fill="#7FA4B0"/>
+  </g>
+
+  <!-- Terra e fileiras de café -->
+  <path d="M0 420 C200 400 600 400 800 420 L800 600 L0 600 Z" fill="url(#terra)"/>
+  <g fill="#2F5641">
+    <g id="fileira1">
+      <ellipse cx="40" cy="432" rx="40" ry="22"/><ellipse cx="120" cy="428" rx="40" ry="22"/><ellipse cx="200" cy="425" rx="40" ry="22"/>
+      <ellipse cx="280" cy="423" rx="40" ry="22"/><ellipse cx="360" cy="422" rx="40" ry="22"/><ellipse cx="440" cy="422" rx="40" ry="22"/>
+      <ellipse cx="520" cy="423" rx="40" ry="22"/><ellipse cx="600" cy="425" rx="40" ry="22"/><ellipse cx="680" cy="428" rx="40" ry="22"/><ellipse cx="760" cy="432" rx="40" ry="22"/>
+    </g>
+  </g>
+  <g fill="#3B6A50">
+    <ellipse cx="0" cy="500" rx="60" ry="34"/><ellipse cx="120" cy="494" rx="60" ry="34"/><ellipse cx="240" cy="490" rx="60" ry="34"/>
+    <ellipse cx="360" cy="488" rx="60" ry="34"/><ellipse cx="480" cy="488" rx="60" ry="34"/><ellipse cx="600" cy="490" rx="60" ry="34"/>
+    <ellipse cx="720" cy="494" rx="60" ry="34"/><ellipse cx="840" cy="500" rx="60" ry="34"/>
+  </g>
+  <g fill="#2B5240">
+    <ellipse cx="60" cy="590" rx="90" ry="54"/><ellipse cx="240" cy="584" rx="90" ry="54"/><ellipse cx="420" cy="582" rx="90" ry="54"/>
+    <ellipse cx="600" cy="584" rx="90" ry="54"/><ellipse cx="780" cy="590" rx="90" ry="54"/>
+  </g>
+  <!-- Folhas claras -->
+  <g fill="#5C8A6A" opacity=".8">
+    <ellipse cx="220" cy="560" rx="16" ry="7" transform="rotate(-25 220 560)"/><ellipse cx="260" cy="552" rx="16" ry="7" transform="rotate(20 260 552)"/>
+    <ellipse cx="400" cy="556" rx="16" ry="7" transform="rotate(-15 400 556)"/><ellipse cx="440" cy="560" rx="16" ry="7" transform="rotate(30 440 560)"/>
+    <ellipse cx="590" cy="558" rx="16" ry="7" transform="rotate(-30 590 558)"/><ellipse cx="620" cy="566" rx="16" ry="7" transform="rotate(15 620 566)"/>
+  </g>
+  <!-- Frutos -->
+  <g fill="#C0392B">
+    <circle cx="210" cy="572" r="6"/><circle cx="222" cy="578" r="6"/><circle cx="232" cy="570" r="6"/>
+    <circle cx="410" cy="572" r="6"/><circle cx="420" cy="580" r="6"/>
+    <circle cx="600" cy="576" r="6"/><circle cx="612" cy="570" r="6"/><circle cx="606" cy="584" r="6"/>
+    <circle cx="352" cy="498" r="4"/><circle cx="360" cy="502" r="4"/><circle cx="118" cy="500" r="4"/><circle cx="596" cy="498" r="4"/><circle cx="604" cy="494" r="4"/>
+  </g>
+  <g fill="#E3A33A"><circle cx="216" cy="586" r="5"/><circle cx="430" cy="574" r="5"/><circle cx="616" cy="582" r="5"/></g>
+</svg>
