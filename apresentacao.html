@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Apresentação · Ambiente de Treinamento</title>
+  <meta name="color-scheme" content="light dark">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/componentes.css">
+  <link rel="stylesheet" href="css/apresentacao.css">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%237A4A2A'/%3E%3Cpath d='M10 13h10v5a5 5 0 0 1-5 5 5 5 0 0 1-5-5z' fill='%23FAF9F7'/%3E%3Cpath d='M20 14h1.5a2.5 2.5 0 0 1 0 5H20' fill='none' stroke='%23FAF9F7' stroke-width='1.6'/%3E%3C/svg%3E">
+  <script src="js/content.js" defer></script>
+  <script src="js/comum.js" defer></script>
+  <script src="js/componentes.js" defer></script>
+  <script src="js/apresentacao.js" defer></script>
+</head>
+<body class="pagina-deck">
+  <div class="deck" id="deck">
+    <div class="deck-fundo" id="deck-fundo" aria-hidden="true">
+      <span class="bolha b1"></span><span class="bolha b2"></span><span class="bolha b3"></span>
+    </div>
+
+    <header class="deck-topo">
+      <a class="deck-marca" id="deck-marca" href="index.html"></a>
+      <p class="deck-trilha" id="deck-trilha"></p>
+      <p class="deck-contador" id="deck-contador"></p>
+    </header>
+
+    <main class="palco" id="palco" tabindex="-1"></main>
+
+    <div class="deck-rodape">
+      <nav class="dock" id="dock"></nav>
+      <div class="deck-progresso" id="deck-progresso"></div>
+    </div>
+
+    <p class="sr-only" id="anuncio" aria-live="polite"></p>
+  </div>
+
+  <div class="visao-geral" id="visao-geral" role="dialog" aria-modal="true" aria-labelledby="vg-titulo" hidden></div>
+  <aside class="painel-notas" id="painel-notas" aria-labelledby="notas-titulo" hidden></aside>
+  <div class="tela-preta" id="tela-preta" hidden></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <noscript><p class="noscript">Este material precisa de JavaScript ativado para funcionar.</p></noscript>
+</body>
+</html>

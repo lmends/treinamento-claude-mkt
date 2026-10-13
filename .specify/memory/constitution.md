@@ -1,5 +1,13 @@
 <!--
 Sync Impact Report
+- Version change: 1.0.0 → 1.1.0
+- Modified principles: III. Conteúdo Separado da Lógica (vale para todos os scripts de lógica,
+  não só js/app.js); VI. Simplicidade (motor compartilhado em js/comum.js)
+- Modified sections: Restrições Adicionais (estrutura em subpáginas: capa, apresentação, estudo)
+- Templates: plan/spec/tasks ✅ sem mudanças necessárias
+- Deferred TODOs: none
+
+Histórico 1.0.0:
 - Version change: (template) → 1.0.0
 - Principles added: I. Estático e Sem Build; II. Zero Credenciais e Zero Rede; III. Conteúdo Separado
   da Lógica; IV. Identidade Própria e Dados Fictícios; V. Acessível e Responsivo por Padrão;
@@ -37,7 +45,8 @@ sistema. Nenhum analytics, login ou coleta de dados.
 
 Todo texto exibido ao usuário (módulos, mensagens, notas, artefatos, rótulos de interface
 editáveis) MUST viver em `js/content.js`, num formato de dados simples e documentado.
-`js/app.js` MUST NOT conter textos de conteúdo do treinamento. Adicionar uma mensagem ou um
+Nenhum script de lógica (`js/*.js` exceto `content.js`) nem página HTML MUST conter textos de
+conteúdo do treinamento. Adicionar uma mensagem ou um
 módulo MUST exigir apenas edição de `content.js`.
 
 *Rationale*: o instrutor edita o conteúdo sem entender a lógica.
@@ -62,16 +71,19 @@ seguir a preferência do sistema.
 
 ### VI. Simplicidade (YAGNI)
 
-Implementar apenas o que o PRD pede. Sem dependências de terceiros em runtime. Preferir um
-único motor de chat reutilizado por chat principal, comparativos e demais componentes.
+Implementar apenas o que o PRD e o instrutor pedem. Sem dependências de terceiros em runtime.
+Um único motor compartilhado (`js/comum.js`: chat, artefatos, componentes) é reutilizado pelas
+páginas de apresentação e de estudo; cada página carrega só o script e o CSS de que precisa.
 
 *Rationale*: projeto pequeno, de vida longa como material de consulta, mantido por não-devs.
 
 ## Restrições Adicionais
 
 - Idioma da interface e do conteúdo: português do Brasil.
-- Estrutura de arquivos fixa: `index.html`, `css/styles.css`, `js/app.js`, `js/content.js`,
-  `README.md`.
+- Estrutura em subpáginas: `index.html` (capa leve), `apresentacao.html` (slides) e
+  `estudo.html` (material de consulta); CSS em `css/base.css` + um arquivo por página; lógica
+  em `js/comum.js` + um script por página; conteúdo único em `js/content.js`; `README.md`.
+  Adicionar um módulo continua exigindo apenas `content.js` (nenhuma página nova por módulo).
 - Progresso do usuário persiste apenas em `localStorage`, com acesso protegido por try/catch.
 - Ferramentas de teste (ex.: Playwright) podem existir apenas como dependência de
   desenvolvimento, fora dos arquivos servidos, e nunca são requeridas para usar o site.
@@ -91,4 +103,4 @@ princípio ou seção nova; PATCH: redação) e registro no Sync Impact Report. 
 passar pelo "Constitution Check" antes da implementação; violações MUST ser justificadas na
 tabela de Complexity Tracking do plano.
 
-**Version**: 1.0.0 | **Ratified**: 2026-10-13 | **Last Amended**: 2026-10-13
+**Version**: 1.1.0 | **Ratified**: 2026-10-13 | **Last Amended**: 2026-10-13
