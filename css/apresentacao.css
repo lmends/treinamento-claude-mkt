@@ -503,6 +503,7 @@ body.com-notas .palco { margin-right: min(400px, 40vw); transition: margin .3s v
 .video-lado .vs-cenas { max-width: 520px; }
 /* Movimento sutil na imagem de abertura */
 .abertura-imagem img { animation: flutua-img 7s ease-in-out infinite alternate; }
+.slide-imagem .figura img { animation: flutua-img 8s ease-in-out infinite alternate; }
 @keyframes flutua-img { from { transform: translateY(0); } to { transform: translateY(-8px); } }
 @media (max-width: 760px) {
   .video-lado { grid-template-columns: minmax(0, 1fr); }
