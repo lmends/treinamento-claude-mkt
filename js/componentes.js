@@ -60,7 +60,23 @@
 
   /* ---------- Mensagens ---------- */
 
+  /* Imagem local (img/…). Se o arquivo faltar, mostra o texto alternativo. */
+  function imagem(src, alt, classe) {
+    var img = el('img', { src: src, alt: alt || '', class: classe || null, loading: 'lazy', decoding: 'async' });
+    img.addEventListener('error', function () {
+      var falha = el('div', { class: 'img-falha' + (classe ? ' ' + classe : ''), role: 'img', 'aria-label': alt || '' }, [icone('imagem', 28), el('span', { text: alt || src })]);
+      if (img.parentNode) img.parentNode.replaceChild(falha, img);
+    });
+    return img;
+  }
+
   function renderAnexo(anexo) {
+    if (anexo.imagem) {
+      return el('figure', { class: 'attachment attachment-img' }, [
+        imagem(anexo.imagem, anexo.alt || anexo.nome),
+        el('figcaption', { class: 'attachment-head' }, [iconeArquivo(anexo.nome), el('span', { class: 'attachment-name', text: anexo.nome })])
+      ]);
+    }
     var filhos = [el('div', { class: 'attachment-head' }, [iconeArquivo(anexo.nome), el('span', { class: 'attachment-name', text: anexo.nome })])];
     if (anexo.conteudo) {
       filhos.push(el('details', null, [
@@ -71,20 +87,29 @@
     return el('div', { class: 'attachment' }, filhos);
   }
 
-  function preencherSelo(selo, nome, carregando) {
+  /* Selo de ferramenta: Skill carregada ou conector acionado */
+  function ferramentaDa(m) {
+    if (m.skill) return { nome: m.skill, tipo: 'skill' };
+    if (m.conector) return { nome: m.conector, tipo: 'conector' };
+    return null;
+  }
+
+  function preencherSelo(selo, ferramenta, carregando) {
+    var conector = ferramenta.tipo === 'conector';
     selo.textContent = '';
     selo.classList.toggle('is-loading', !!carregando);
+    selo.classList.toggle('is-conector', conector);
     if (carregando) {
       selo.appendChild(el('span', { class: 'spinner', 'aria-hidden': 'true' }));
-      selo.appendChild(el('span', { text: t('carregandoSkill') }));
+      selo.appendChild(el('span', { text: t(conector ? 'acionandoConector' : 'carregandoSkill') }));
     } else {
-      selo.appendChild(icone('check', 16));
-      selo.appendChild(el('span', { text: t('skillEmUso') + ' ' }));
-      selo.appendChild(el('strong', { text: nome }));
+      selo.appendChild(icone(conector ? 'conector' : 'check', 16));
+      selo.appendChild(el('span', { text: t(conector ? 'conectorEmUso' : 'skillEmUso') + ' ' }));
+      selo.appendChild(el('strong', { text: ferramenta.nome }));
     }
   }
 
-  var ICONE_ARTEFATO = { carrossel: 'carrossel', post: 'post', email: 'email' };
+  var ICONE_ARTEFATO = { carrossel: 'carrossel', post: 'post', email: 'email', 'prompt-imagem': 'imagem', roteiro: 'video', imagem: 'imagem' };
 
   function renderChipsArtefatos(artefatos, aoAbrir) {
     return el('div', { class: 'artifact-chips' }, artefatos.map(function (a, i) {
@@ -132,9 +157,10 @@
     if (ehAluna && m.anexo) principal.appendChild(renderAnexo(m.anexo));
 
     var selo = null;
-    if (!ehAluna && m.skill) {
+    var ferramenta = ehAluna ? null : ferramentaDa(m);
+    if (ferramenta) {
       selo = el('div', { class: 'skill-badge' });
-      preencherSelo(selo, m.skill, !!opcoes.animando);
+      preencherSelo(selo, ferramenta, !!opcoes.animando);
       principal.appendChild(selo);
     }
 
@@ -286,10 +312,10 @@
       log.appendChild(provisoria.elemento);
       rolar();
 
-      if (m.skill) {
+      if (ferramentaDa(m)) {
         await a.pausa(TEMPO.carregandoSkill);
         if (a.cancelado) return;
-        preencherSelo(provisoria.selo, m.skill, false);
+        preencherSelo(provisoria.selo, ferramentaDa(m), false);
         provisoria.selo.classList.add('is-just-loaded');
       }
 
@@ -500,6 +526,7 @@
             el('span', { class: 'post-avatar', 'aria-hidden': 'true', text: MARCA.iniciais || '' }),
             el('span', { class: 'post-user' }, [el('strong', { text: MARCA.nome || '' }), el('span', { text: MARCA.usuario || '' })])
           ]),
+          p.foto ? el('div', { class: 'post-photo' }, [imagem(p.foto, p.imagem || '')]) :
           p.imagem ? el('div', { class: 'post-image', role: 'img', 'aria-label': t('sugestaoImagem') + ': ' + p.imagem }, [
             icone('imagem', 34), el('span', { 'aria-hidden': 'true', text: t('sugestaoImagem') + ': ' + p.imagem })
           ]) : null,
@@ -529,7 +556,69 @@
     ]);
   }
 
-  var RENDER_ARTEFATO = { carrossel: renderCarrossel, post: renderPost, email: renderEmail };
+  function caixaPrompt(rotulo, texto, classe) {
+    return el('div', { class: 'prompt-bloco' + (classe ? ' ' + classe : '') }, [
+      el('div', { class: 'prompt-bloco-cab' }, [
+        el('span', { text: rotulo }),
+        el('button', {
+          type: 'button', class: 'btn btn-ghost btn-xs', 'data-blur-on-click': true,
+          onclick: function () { T.copiar(texto, t('promptCopiado')); }
+        }, [icone('copiar', 14), el('span', { text: t('copiar') })])
+      ]),
+      el('pre', { class: 'prompt-box', text: texto })
+    ]);
+  }
+
+  function renderPromptImagem(a) {
+    return el('div', { class: 'prompt-imagem' }, [
+      a.ferramenta ? el('p', { class: 'artifact-nota' }, [icone('imagem', 16), el('span', { text: a.ferramenta })]) : null,
+      a.campos && a.campos.length ? el('dl', { class: 'prompt-campos' }, a.campos.map(function (c) {
+        return el('div', null, [el('dt', { text: c.rotulo }), el('dd', { html: inline(c.valor) })]);
+      })) : null,
+      a.prompt ? caixaPrompt(t('promptPortugues'), a.prompt) : null,
+      a.promptIngles ? caixaPrompt(t('promptIngles'), a.promptIngles, 'is-en') : null,
+      a.evitar ? el('p', { class: 'prompt-evitar' }, [el('strong', { text: t('promptEvitar') + ' ' }), el('span', { text: a.evitar })]) : null
+    ]);
+  }
+
+  function renderRoteiro(a) {
+    var cenas = a.cenas || [];
+    return el('div', { class: 'roteiro' }, [
+      a.formato ? el('p', { class: 'roteiro-formato' }, [icone('video', 16), el('span', { text: a.formato })]) : null,
+      el('ol', { class: 'roteiro-cenas' }, cenas.map(function (c, i) {
+        return el('li', { class: 'cena' }, [
+          el('div', { class: 'cena-quadro v' + (i % 3), 'aria-hidden': 'true' }, [
+            el('span', { class: 'cena-num', text: String(i + 1) }),
+            c.textoTela ? el('span', { class: 'cena-legenda', text: c.textoTela }) : null,
+            el('span', { class: 'cena-tempo', text: c.tempo || '' })
+          ]),
+          el('dl', { class: 'cena-campos' }, [
+            el('div', null, [el('dt', { text: t('cenaTempo') }), el('dd', { text: c.tempo || '' })]),
+            el('div', null, [el('dt', { text: t('cenaImagem') }), el('dd', { html: inline(c.imagem || '') })]),
+            c.textoTela ? el('div', null, [el('dt', { text: t('cenaTexto') }), el('dd', { text: c.textoTela })]) : null,
+            c.audio ? el('div', null, [el('dt', { text: t('cenaAudio') }), el('dd', { html: inline(c.audio) })]) : null
+          ]),
+          c.promptVideo ? caixaPrompt(t('cenaPrompt'), c.promptVideo, 'cena-prompt') : null
+        ]);
+      })),
+      a.legenda ? el('div', { class: 'caption-box' }, [
+        el('h4', { text: t('legenda') }), md(a.legenda),
+        a.hashtags && a.hashtags.length ? el('p', { class: 'hashtags', text: a.hashtags.join(' ') }) : null
+      ]) : null
+    ]);
+  }
+
+  function renderImagemGerada(a) {
+    return el('div', { class: 'imagem-gerada' }, [
+      el('figure', { class: 'imagem-gerada-fig' }, [
+        imagem(a.src, a.alt),
+        a.ferramenta ? el('figcaption', null, [icone('conector', 14), el('span', { text: a.ferramenta })]) : null
+      ]),
+      a.prompt ? caixaPrompt(t('promptUsado'), a.prompt, 'is-en') : null
+    ]);
+  }
+
+  var RENDER_ARTEFATO = { imagem: renderImagemGerada, carrossel: renderCarrossel, post: renderPost, email: renderEmail, 'prompt-imagem': renderPromptImagem, roteiro: renderRoteiro };
 
   function textoDoArtefato(a) {
     var linhas = [];
@@ -549,6 +638,26 @@
       if (a.preCabecalho) linhas.push(t('emailPre') + ': ' + a.preCabecalho);
       linhas.push('', textoPuro(a.corpo));
       if (a.botao) linhas.push('', '[' + a.botao + ']');
+    } else if (a.tipo === 'imagem') {
+      linhas.push(a.alt || a.titulo || '');
+      if (a.prompt) linhas.push('', t('promptUsado') + ':', a.prompt);
+    } else if (a.tipo === 'prompt-imagem') {
+      (a.campos || []).forEach(function (c) { linhas.push(c.rotulo + ': ' + textoPuro(c.valor)); });
+      if (a.prompt) linhas.push('', t('promptPortugues') + ':', a.prompt);
+      if (a.promptIngles) linhas.push('', t('promptIngles') + ':', a.promptIngles);
+      if (a.evitar) linhas.push('', t('promptEvitar') + ' ' + a.evitar);
+    } else if (a.tipo === 'roteiro') {
+      if (a.formato) linhas.push(a.formato, '');
+      (a.cenas || []).forEach(function (c, i) {
+        linhas.push(t('cenaN', { n: i + 1 }) + ' (' + (c.tempo || '') + ')');
+        linhas.push('- ' + t('cenaImagem') + ': ' + textoPuro(c.imagem || ''));
+        if (c.textoTela) linhas.push('- ' + t('cenaTexto') + ': ' + c.textoTela);
+        if (c.audio) linhas.push('- ' + t('cenaAudio') + ': ' + textoPuro(c.audio));
+        if (c.promptVideo) linhas.push('- ' + t('cenaPrompt') + ': ' + c.promptVideo);
+        linhas.push('');
+      });
+      if (a.legenda) linhas.push(t('legenda') + ': ' + textoPuro(a.legenda));
+      if (a.hashtags && a.hashtags.length) linhas.push(a.hashtags.join(' '));
     }
     return linhas.join('\n');
   }
@@ -761,9 +870,13 @@
         el(nivel || 'h2', { class: 'practice-title', text: b.titulo || t('agoraTente') })
       ]),
       b.texto ? md(b.texto, 'practice-text') : null,
-      el('pre', { class: 'prompt-box', text: b.prompt }),
+      b.passos && b.passos.length ? el('ol', { class: 'practice-steps' }, b.passos.map(function (p) { return el('li', { html: inline(p) }); })) : null,
+      b.prompts && b.prompts.length ? el('div', { class: 'practice-prompts' }, b.prompts.map(function (p) {
+        return caixaPrompt(p.rotulo || t('copiarPrompt'), p.texto);
+      })) : null,
+      b.prompt ? el('pre', { class: 'prompt-box', text: b.prompt }) : null,
       el('div', { class: 'practice-actions' }, [
-        botaoCopiar(t('copiarPrompt'), function () { return b.prompt; }, t('promptCopiado'), 'btn btn-primary'),
+        b.prompt ? botaoCopiar(t('copiarPrompt'), function () { return b.prompt; }, t('promptCopiado'), 'btn btn-primary') : null,
         el('a', { class: 'btn', href: b.link || 'https://claude.ai', target: '_blank', rel: 'noopener noreferrer' }, [
           el('span', { text: t('abrirClaude') }), icone('externo', 16), el('span', { class: 'sr-only', text: ' ' + t('novaAba') })
         ])
@@ -787,13 +900,177 @@
     }));
   }
 
+  /* Figura com imagem local, legenda opcional */
+  function renderImagem(b) {
+    return el('figure', { class: 'figura' + (b.moldura === false ? '' : ' com-moldura') }, [
+      imagem(b.src, b.alt),
+      b.legenda ? el('figcaption', { html: inline(b.legenda) }) : null
+    ]);
+  }
+
+  /* Demonstração "próxima palavra".
+     estatico: true mostra todas as rodadas prontas (estudo). */
+  function criarProximaPalavra(b, opcoes) {
+    opcoes = opcoes || {};
+    var rodadas = b.rodadas || [];
+    var raiz = el('div', { class: 'pp' });
+
+    function barras(r, mostrar, escolhida) {
+      var max = Math.max.apply(null, (r.opcoes || []).map(function (o) { return o.chance; }).concat([1]));
+      return el('ol', { class: 'pp-opcoes' + (mostrar ? ' is-visivel' : '') }, (r.opcoes || []).map(function (o, i) {
+        var esc = escolhida && i === (r.escolhida || 0);
+        return el('li', { class: 'pp-opcao' + (esc ? ' is-escolhida' : ''), style: { '--i': String(i) } }, [
+          el('span', { class: 'pp-palavra', text: o.palavra }),
+          el('span', { class: 'pp-barra' }, [el('span', { style: { '--w': (o.chance / max * 100) + '%' } })]),
+          el('span', { class: 'pp-chance', text: o.chance + '%' })
+        ]);
+      }));
+    }
+
+    function frase(r, escolhida) {
+      var palavra = (r.opcoes || [])[r.escolhida || 0];
+      return el('p', { class: 'pp-frase' }, [
+        el('span', { text: r.frase + ' ' }),
+        escolhida && palavra ? el('mark', { class: 'pp-nova', text: palavra.palavra }) : el('span', { class: 'pp-lacuna', 'aria-label': t('ppLacuna'), text: '___' })
+      ]);
+    }
+
+    if (opcoes.estatico) {
+      rodadas.forEach(function (r, i) {
+        raiz.appendChild(el('div', { class: 'pp-rodada' }, [
+          el('p', { class: 'pp-rotulo', text: t('ppRodada', { n: i + 1 }) }),
+          frase(r, true), barras(r, true, true)
+        ]));
+      });
+      if (b.conclusao) raiz.appendChild(md(b.conclusao, 'pp-conclusao'));
+      return { elemento: raiz };
+    }
+
+    // Passos: para cada rodada, 1) mostra as chances, 2) escolhe a palavra
+    var palco = el('div', { class: 'pp-palco', 'aria-live': 'polite' });
+    var conclusao = b.conclusao ? md(b.conclusao, 'pp-conclusao frag') : null;
+    raiz.appendChild(palco);
+    if (conclusao) raiz.appendChild(conclusao);
+    var rodada = 0, fase = 0; // fase 0: só a frase; 1: barras; 2: escolhida
+
+    function desenhar() {
+      var r = rodadas[rodada];
+      palco.textContent = '';
+      if (!r) return;
+      palco.appendChild(el('p', { class: 'pp-rotulo', text: t('ppRodada', { n: rodada + 1 }) + ' · ' + t('ppDeTotal', { total: rodadas.length }) }));
+      palco.appendChild(frase(r, fase >= 2));
+      palco.appendChild(barras(r, fase >= 1, fase >= 2));
+    }
+    desenhar();
+
+    function concluido() {
+      return rodada >= rodadas.length - 1 && fase >= 2 && (!conclusao || conclusao.classList.contains('is-visivel'));
+    }
+    function avancar() {
+      if (concluido()) return false;
+      if (fase < 2) { fase += 1; desenhar(); return true; }
+      if (rodada < rodadas.length - 1) { rodada += 1; fase = 0; desenhar(); return true; }
+      if (conclusao) conclusao.classList.add('is-visivel');
+      return true;
+    }
+    function completar() {
+      rodada = Math.max(0, rodadas.length - 1); fase = 2; desenhar();
+      if (conclusao) conclusao.classList.add('is-visivel');
+    }
+    return { elemento: raiz, avancar: avancar, concluido: concluido, completar: completar };
+  }
+
+  /* Como a IA "vê" uma imagem: foto, grade de pedaços e marcações.
+     Etapas com { titulo, texto, grade, marcacoes }. estatico: estado final. */
+  function criarVisao(b, opcoes) {
+    opcoes = opcoes || {};
+    var etapas = b.etapas || [];
+    var marcacoes = b.marcacoes || [];
+    var grade = el('div', { class: 'visao-grade', 'aria-hidden': 'true' });
+    var pinos = marcacoes.map(function (m, i) {
+      var lado = m.lado || (m.x > 58 ? 'esquerda' : 'direita');
+      var alinhar = m.x > 80 ? ' alinha-dir' : m.x < 20 ? ' alinha-esq' : '';
+      return el('div', {
+        class: 'visao-pino lado-' + lado + alinhar,
+        style: { left: m.x + '%', top: m.y + '%' }
+      }, [el('span', { class: 'visao-num', 'aria-hidden': 'true', text: String(i + 1) }), el('span', { class: 'visao-rotulo', text: m.rotulo })]);
+    });
+    var foto = el('div', { class: 'visao-foto' }, [imagem(b.src, b.alt)].concat([grade]).concat(pinos));
+    var lista = el('ol', { class: 'visao-marcas sr-only' }, marcacoes.map(function (m) { return el('li', { text: m.rotulo }); }));
+
+    if (opcoes.estatico) {
+      foto.classList.add('com-grade', 'estatico');
+      pinos.forEach(function (p) { p.classList.add('is-visivel'); });
+      return {
+        elemento: el('div', { class: 'visao' }, [foto, el('ol', { class: 'visao-etapas' }, etapas.map(function (e) {
+          return el('li', null, [el('strong', { text: e.titulo }), md(e.texto)]);
+        })), lista])
+      };
+    }
+
+    var painel = el('div', { class: 'visao-painel', 'aria-live': 'polite' });
+    var pontos = el('div', { class: 'visao-pontos', 'aria-hidden': 'true' }, etapas.map(function () { return el('span'); }));
+    var acoes = [];
+    etapas.forEach(function (e, i) {
+      if (i > 0) acoes.push({ etapa: i });
+      if (e.marcacoes) marcacoes.forEach(function (_, k) { acoes.push({ etapa: i, pino: k }); });
+    });
+    var feitas = 0, etapaAtual = 0, pinosVisiveis = 0;
+
+    function mostrarEtapa(i) {
+      etapaAtual = i;
+      var e = etapas[i] || {};
+      var grades = etapas.slice(0, i + 1).some(function (x) { return x.grade; });
+      foto.classList.toggle('com-grade', !!grades && !e.semGrade);
+      painel.textContent = '';
+      painel.appendChild(el('div', { class: 'visao-painel-in' }, [
+        el('p', { class: 'visao-passo', text: t('visaoEtapa', { atual: i + 1, total: etapas.length }) }),
+        el('h3', { text: e.titulo || '' }),
+        md(e.texto || '')
+      ]));
+      painel.appendChild(pontos);
+      Array.prototype.forEach.call(pontos.children, function (p, j) { p.className = j < i ? 'is-feito' : j === i ? 'is-atual' : ''; });
+    }
+    function aplicar(acao) {
+      if (acao.pino != null) { pinos[acao.pino].classList.add('is-visivel'); pinosVisiveis += 1; }
+      else mostrarEtapa(acao.etapa);
+    }
+    mostrarEtapa(0);
+
+    return {
+      elemento: el('div', { class: 'visao' }, [foto, painel, lista]),
+      avancar: function () { if (feitas >= acoes.length) return false; aplicar(acoes[feitas]); feitas += 1; return true; },
+      concluido: function () { return feitas >= acoes.length; },
+      completar: function () { while (feitas < acoes.length) { aplicar(acoes[feitas]); feitas += 1; } }
+    };
+  }
+
+  /* Comparativo de prompts de imagem com o resultado do gerador */
+  function renderAntesDepois(b) {
+    function coluna(lado, dados) {
+      dados = dados || {};
+      return el('div', { class: 'ad-col ad-' + lado }, [
+        el('span', { class: 'compare-label', text: dados.rotulo || t(lado) }),
+        el('div', { class: 'ad-prompt' }, [el('span', { class: 'ad-prompt-rotulo', text: t('promptUsado') }), el('p', { text: dados.prompt || '' })]),
+        el('figure', { class: 'ad-figura' }, [
+          imagem(dados.src, dados.alt),
+          el('figcaption', { text: t('resultadoGerador') })
+        ]),
+        dados.comentario ? el('div', { class: 'ad-comentario' }, [md(dados.comentario)]) : null
+      ]);
+    }
+    return el('div', { class: 'antes-depois' }, [coluna('antes', b.antes), coluna('depois', b.depois)]);
+  }
+
   var exportar = {
     Animacao: Animacao, rolarAte: rolarAte,
     renderMensagem: renderMensagem, criarChat: criarChat,
     criarVisualizadorArtefatos: criarVisualizadorArtefatos, textoDoArtefato: textoDoArtefato,
     renderCards: renderCards, renderDestaque: renderDestaque, renderAgenda: renderAgenda,
     renderProjeto: renderProjeto, renderSkill: renderSkill, renderTabela: renderTabela,
-    renderMock: renderMock, renderPratica: renderPratica, renderLinks: renderLinks
+    renderMock: renderMock, renderPratica: renderPratica, renderLinks: renderLinks,
+    imagem: imagem, renderImagem: renderImagem, criarProximaPalavra: criarProximaPalavra,
+    criarVisao: criarVisao, renderAntesDepois: renderAntesDepois
   };
   Object.keys(exportar).forEach(function (k) { T[k] = exportar[k]; });
 })();

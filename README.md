@@ -5,8 +5,9 @@ sobre o uso do Claude no marketing e na criação de conteúdo. Todas as convers
 **roteirizadas**: não há API, chave ou coleta de dados. Os exemplos usam a marca fictícia
 **Café Serra**.
 
-São 7 módulos: Boas-vindas · Conhecendo o ambiente · Pedir bem · Projetos · Skills ·
-Reaproveitamento de conteúdo · Cuidados e próximos passos.
+São 11 módulos (cerca de 90 minutos): Boas-vindas · O que é uma IA · Conhecendo o ambiente ·
+Pedir bem · Ajustar sem recomeçar · Como o Claude “vê” imagens · Fotos e vídeos com IA ·
+Projetos · Skills · Reaproveitamento de conteúdo · Cuidados e próximos passos.
 
 ---
 
@@ -33,7 +34,7 @@ texto aparecendo) e os resultados (carrossel, legendas, e-mail) surgem ao lado d
 |------|-------|
 | Avançar (próximo item, próxima mensagem ou próximo slide) | **→**, **Espaço**, **Enter** ou **PageDown** |
 | Voltar ao slide anterior | **←**, **PageUp** ou **Backspace** |
-| Ir para o módulo 1–7 | **1** a **7** |
+| Ir para o módulo 1–10 | **1** a **9** e **0** (módulo 10); os demais pela visão geral |
 | Primeiro / último slide | **Home** / **End** |
 | Visão geral de todos os slides | **O** |
 | Notas do instrutor | **N** |
@@ -101,8 +102,9 @@ Campos de uma mensagem:
 | `autor` | `"aluna"` ou `"assistente"` (obrigatório) |
 | `texto` | O conteúdo da mensagem (obrigatório) |
 | `nota` | Nota do instrutor: visível no estudo e no painel de notas (**N**) dos slides |
-| `anexo` | Só para a aluna: `{ nome: "briefing.pdf", conteudo: "texto opcional" }` |
+| `anexo` | Só para a aluna: `{ nome: "briefing.pdf", conteudo: "texto opcional" }` ou, para imagem, `{ nome: "foto.jpg", imagem: "img/foto.jpg", alt: "descrição" }` |
 | `skill` | Só para o assistente: mostra o selo "Skill em uso: …" |
+| `conector` | Só para o assistente: mostra o selo "Conector em uso: …" (ex.: um gerador de imagens conectado) |
 | `artefatos` | Só para o assistente: resultados (carrossel, legendas, e-mail) exibidos ao lado do chat nos slides e abaixo da resposta no estudo |
 
 ### Exemplo: adicionar um módulo
@@ -167,6 +169,10 @@ use o campo `slide` para trocar só o que aparece na apresentação:
 | `texto` | `titulo`, `texto` |
 | `destaque` | `icone`, `titulo`, `texto`, `cor: "verde"` (opcional) |
 | `frase` | `texto` (frase de impacto), `apoio` (opcional), `icone` (opcional) |
+| `imagem` | `titulo`, `texto` (opcional, fica ao lado da imagem), `src`, `alt`, `legenda` |
+| `proxima-palavra` | `titulo`, `texto`, `rodadas: [{ frase, opcoes: [{ palavra, chance }], escolhida }]`, `conclusao` |
+| `visao` | `titulo`, `src`, `alt`, `etapas: [{ titulo, texto, grade, marcacoes }]`, `marcacoes: [{ x, y, rotulo, lado }]` (x e y em %) |
+| `antes-depois` | `titulo`, `texto`, `antes: { rotulo, prompt, src, alt, comentario }`, `depois: { … }` |
 | `cards` | `titulo`, `itens: [{ icone, titulo, texto }]` |
 | `visao-geral` | `titulo` (lista os módulos automaticamente) |
 | `chat` | `tituloBloco`, `titulo`, `contexto`, `mensagens` |
@@ -175,7 +181,7 @@ use o campo `slide` para trocar só o que aparece na apresentação:
 | `skill` | `nome`, `descricao`, `instrucoes: ["..."]` |
 | `tabela` | `titulo`, `colunas: [...]`, `linhas: [[...], ...]` |
 | `tour` | `interfaceSimulada: { ... }`, `passos: [{ alvo, titulo, texto }]` (alvos: `campo-mensagem`, `anexar`, `historico`, `projetos`) |
-| `pratica` | `titulo` (opcional), `texto`, `prompt`, `link` (padrão: https://claude.ai) |
+| `pratica` | `titulo` (opcional), `texto`, `passos: ["…"]`, `prompt` **ou** `prompts: [{ rotulo, texto }]`, `link` (padrão: https://claude.ai) |
 | `links` | `titulo`, `itens: [{ rotulo, url, descricao }]` |
 
 ### Tipos de artefato
@@ -184,7 +190,21 @@ use o campo `slide` para trocar só o que aparece na apresentação:
 { tipo: "carrossel", titulo: "...", slides: ["...", "..."], legenda: "...", hashtags: ["#..."] }
 { tipo: "post", titulo: "...", posts: [{ texto: "...", hashtags: ["#..."], imagem: "descrição da imagem" }] }
 { tipo: "email", titulo: "...", assunto: "...", preCabecalho: "...", corpo: "...", botao: "..." }
+{ tipo: "prompt-imagem", titulo: "...", campos: [{ rotulo, valor }], prompt: "...", promptIngles: "...", evitar: "..." }
+{ tipo: "roteiro", titulo: "...", formato: "Reels · 9:16 · 15 s", cenas: [{ tempo, imagem, textoTela, audio, promptVideo }], legenda, hashtags }
+{ tipo: "imagem", titulo: "...", src: "img/...", alt: "...", ferramenta: "...", prompt: "..." }
 ```
+
+Nos posts, use `foto: "img/arquivo.svg"` para mostrar uma imagem e `imagem: "descrição"` como texto
+alternativo.
+
+### Imagens
+
+As ilustrações ficam em `img/` (arquivos SVG próprios, sem fotos de banco e sem internet). Para usar
+fotos reais da sua marca, copie o arquivo para `img/` (ex.: `img/minha-foto.jpg`) e troque o
+caminho no `content.js`. Escreva sempre o `alt`, a descrição da imagem para quem usa leitor de tela.
+Um módulo pode ter `imagem` e `imagemAlt` para ganhar ilustração no slide de abertura e no topo da
+página de estudo.
 
 Os textos de botões e avisos ficam no início de `content.js`, em `interface`. O título e o
 subtítulo da capa (e do primeiro slide) ficam em `apresentacao`.
@@ -221,6 +241,7 @@ css/base.css          cores, tema claro/escuro, botões
 css/componentes.css   chat, cards, artefatos e demais componentes
 css/inicio.css        capa
 css/apresentacao.css  slides (transições, tipografia de palco)
+img/                  ilustrações usadas nos slides e no estudo
 css/estudo.css        página de estudo
 js/content.js         TODO o conteúdo do treinamento  ← edite aqui
 js/comum.js           utilitários compartilhados (textos, tema, progresso salvo)

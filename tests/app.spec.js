@@ -73,7 +73,7 @@ test.describe('restrições', () => {
     await preparar(page);
     await page.goto(url('index.html'));
     await expect(page.locator('.modo')).toHaveCount(2);
-    await expect(page.locator('.mod')).toHaveCount(7);
+    await expect(page.locator('.mod')).toHaveCount(11);
     expect(m.arquivos.some((a) => /componentes|apresentacao\.js|estudo\.js/.test(a))).toBe(false);
     expect(m.erros).toEqual([]);
     for (const h of m.hosts) expect(HOSTS_PERMITIDOS).toContain(h);
@@ -99,16 +99,18 @@ test.describe('restrições', () => {
     for (const h of m.hosts) expect(HOSTS_PERMITIDOS).toContain(h);
   });
 
-  test('estudo: os 7 módulos abrem sem erros e sem rolagem horizontal', async ({ page }) => {
+  test('estudo: todos os módulos abrem sem erros e sem rolagem horizontal', async ({ page }) => {
     const m = monitorar(page);
     await preparar(page);
     await abrirEstudo(page);
-    for (let i = 1; i <= 7; i++) {
-      await expect(page.locator('.module-kicker')).toHaveText(`Módulo ${i} de 7`);
+    const total = await page.evaluate(() => window.CONTEUDO.modulos.length);
+    expect(total).toBe(11);
+    for (let i = 1; i <= total; i++) {
+      await expect(page.locator('.module-kicker')).toHaveText(`Módulo ${i} de ${total}`);
       const r = await page.evaluate(() => [document.documentElement.scrollWidth, window.innerWidth]);
       expect(r[0], `rolagem horizontal no módulo ${i}`).toBeLessThanOrEqual(r[1]);
       await expect(page.locator('.aviso')).toHaveCount(0);
-      if (i < 7) await page.locator('.pager-proximo').click();
+      if (i < total) await page.locator('.pager-proximo').click();
     }
     expect(m.erros).toEqual([]);
     for (const h of m.hosts) expect(HOSTS_PERMITIDOS).toContain(h);
@@ -133,14 +135,16 @@ test.describe('apresentação', () => {
     await expect(contador(page)).toHaveText(/^3 \//);
     await page.keyboard.press('ArrowLeft');
     await expect(contador(page)).toHaveText(/^2 \//);
-    await page.keyboard.press('3');
+    await page.keyboard.press('4');
     await expect(page).toHaveURL(/#pedir-bem$/);
+    await page.keyboard.press('0');
+    await expect(page).toHaveURL(/#reaproveitamento$/);
     await page.keyboard.press('End');
     await expect(page.locator('#btn-avancar')).toBeDisabled();
     await page.keyboard.press('Home');
     await expect(contador(page)).toHaveText(/^1 \//);
 
-    await page.keyboard.press('5');
+    await page.keyboard.press('9');
     await page.goto(url('apresentacao.html'));
     await expect(page).toHaveURL(/#skills$/);
     await expect(slideAtual(page).locator('.abertura-titulo')).toHaveText('Skills');
@@ -228,7 +232,7 @@ test.describe('apresentação', () => {
 
   test('tour destaca um ponto da interface por avanço', async ({ page }) => {
     await abrirDeck(page);
-    await irParaSlide(page, 'conhecendo-o-ambiente/2');
+    await irParaSlide(page, 'conhecendo-o-ambiente/1');
     const s = slideAtual(page);
     await expect(s.locator('.is-highlight')).toHaveCount(0);
     await page.keyboard.press('Space');
@@ -244,7 +248,7 @@ test.describe('apresentação', () => {
     const vg = page.locator('#visao-geral');
     await expect(vg).toBeVisible();
     await expect(vg.locator('.vg-slide[aria-current="true"]')).toHaveCount(1);
-    await vg.locator('.vg-abertura').nth(3).click();
+    await vg.locator('.vg-abertura').nth(7).click();
     await expect(vg).toBeHidden();
     await expect(page).toHaveURL(/#projetos$/);
 
@@ -267,13 +271,13 @@ test.describe('apresentação', () => {
     await expect(contador(page)).toHaveText(/^2 \//);
     await page.locator('#btn-voltar').click();
     await expect(contador(page)).toHaveText(/^1 \//);
-    await page.locator('#deck-progresso .seg').nth(2).click();
+    await page.locator('#deck-progresso .seg').nth(3).click();
     await expect(page).toHaveURL(/#pedir-bem$/);
   });
 
   test('prática no slide copia o prompt', async ({ page }) => {
     await abrirDeck(page);
-    await irParaSlide(page, 'pedir-bem/5');
+    await irParaSlide(page, 'pedir-bem/4');
     await slideAtual(page).getByRole('button', { name: 'Copiar prompt' }).click();
     expect(await page.evaluate(() => window.__copiado)).toContain('Crie uma legenda para o Instagram');
     await expect(slideAtual(page).getByRole('link', { name: /Abrir o Claude/ })).toHaveAttribute('href', 'https://claude.ai');
@@ -283,7 +287,7 @@ test.describe('apresentação', () => {
     const ctx = await browser.newContext({ reducedMotion: 'reduce' });
     const page = await ctx.newPage();
     await preparar(page);
-    await abrirDeck(page, 'pedir-bem/4');
+    await abrirDeck(page, 'ajustar/5');
     await page.keyboard.press('Space');
     await expect(slideAtual(page).locator('.msg')).toHaveCount(1);
     await expect(slideAtual(page).locator('.composer.is-typing')).toHaveCount(0);
@@ -300,6 +304,146 @@ test.describe('apresentação', () => {
     await expect(slideAtual(page).locator('[role="log"][aria-live="polite"]')).toHaveCount(0);
     await irParaSlide(page, 'skills/4');
     await expect(slideAtual(page).locator('[role="log"][aria-live="polite"]')).toHaveCount(1);
+  });
+});
+
+/* ======================================================================
+   Conteúdo da feature 003: IA, imagens, fotos e vídeos
+   ====================================================================== */
+test.describe('imagens e demonstrações', () => {
+  test.beforeEach(async ({ page }) => { await preparar(page); });
+
+  test('todas as imagens locais carregam e têm texto alternativo', async ({ page }) => {
+    await abrirEstudo(page);
+    const total = await page.evaluate(() => window.CONTEUDO.modulos.length);
+    for (let i = 0; i < total; i++) {
+      await page.evaluate((i) => { location.hash = window.CONTEUDO.modulos[i].id; }, i);
+      await expect(page.locator('.module-kicker')).toHaveText(new RegExp(`Módulo ${i + 1} de`));
+      const imgs = await page.evaluate(async () => {
+        const lista = Array.from(document.querySelectorAll('#modulo img'));
+        lista.forEach((img) => { img.loading = 'eager'; });
+        await Promise.all(lista.map((img) => img.decode().catch(() => null)));
+        return lista.map((img) => ({ src: img.getAttribute('src'), ok: img.naturalWidth > 0, alt: img.alt }));
+      });
+      for (const im of imgs) {
+        expect(im.ok, `imagem não carregou: ${im.src}`).toBe(true);
+        expect(im.alt.length, `sem alt: ${im.src}`).toBeGreaterThan(10);
+      }
+    }
+    await expect(page.locator('.img-falha')).toHaveCount(0);
+  });
+
+  test('deck tem slides com imagem suficientes', async ({ page }) => {
+    await abrirDeck(page);
+    const comImagem = await page.evaluate(() => {
+      let n = 0;
+      for (let i = 0; i < window.Deck.total; i++) {
+        window.Deck.ir(i, { instantaneo: true, completo: true });
+        if (document.querySelector('.slide:not([aria-hidden="true"]) img')) n++;
+      }
+      return n;
+    });
+    expect(comImagem).toBeGreaterThanOrEqual(8);
+  });
+
+  test('próxima palavra: barras, escolha e conclusão a cada avanço', async ({ page }) => {
+    await abrirDeck(page);
+    await irParaSlide(page, 'o-que-e-ia/2');
+    const s = slideAtual(page);
+    await expect(s.locator('.pp-lacuna')).toBeVisible();
+    await expect(s.locator('.pp-opcoes.is-visivel')).toHaveCount(0);
+    await page.keyboard.press('Space');
+    await expect(s.locator('.pp-opcoes.is-visivel')).toHaveCount(1);
+    await page.keyboard.press('Space');
+    await expect(s.locator('.pp-nova')).toHaveText('hora');
+    for (let i = 0; i < 6; i++) await page.keyboard.press('Space');
+    await expect(s.locator('.pp-nova')).toHaveText('queijo');
+    await expect(s.locator('.pp-conclusao')).toBeHidden();
+    await page.keyboard.press('Space');
+    await expect(s.locator('.pp-conclusao')).toBeVisible();
+    await page.keyboard.press('Space');
+    await expect(page).toHaveURL(/#o-que-e-ia\/3$/);
+  });
+
+  test('visão: grade e marcações entram passo a passo', async ({ page }) => {
+    await abrirDeck(page);
+    await irParaSlide(page, 'imagens/1');
+    const s = slideAtual(page);
+    await expect(s.locator('.visao-foto.com-grade')).toHaveCount(0);
+    await page.keyboard.press('Space');
+    await expect(s.locator('.visao-foto.com-grade')).toHaveCount(1);
+    await page.keyboard.press('Space');
+    await expect(s.locator('.visao-passo')).toHaveText('Etapa 3 de 4');
+    for (let n = 1; n <= 5; n++) {
+      await page.keyboard.press('Space');
+      await expect(s.locator('.visao-pino.is-visivel')).toHaveCount(n);
+    }
+    await page.keyboard.press('Space');
+    await expect(s.locator('.visao-passo')).toHaveText('Etapa 4 de 4');
+  });
+
+  test('antes e depois de imagem revela o prompt estruturado', async ({ page }) => {
+    await abrirDeck(page);
+    await irParaSlide(page, 'fotos-e-videos/4');
+    const s = slideAtual(page);
+    await expect(s.locator('.ad-depois')).not.toHaveClass(/is-visivel/);
+    await page.keyboard.press('Space');
+    await page.keyboard.press('Space');
+    await expect(s.locator('.ad-depois')).toHaveClass(/is-visivel/);
+    await expect(s.locator('.ad-depois img')).toHaveAttribute('src', 'img/cafe-inverno.svg');
+  });
+
+  test('conector gera a imagem na conversa com selo próprio', async ({ page }) => {
+    await abrirDeck(page);
+    await irParaSlide(page, 'fotos-e-videos/8');
+    await page.evaluate(() => window.Deck.ir(window.Deck.atual(), { forcar: true, instantaneo: true, completo: true }));
+    const s = slideAtual(page);
+    await expect(s.locator('.skill-badge.is-conector')).toContainText('Conector em uso');
+    await expect(s.locator('.resultado .imagem-gerada img')).toBeVisible();
+  });
+
+  test('prompt de imagem e roteiro de vídeo copiam o texto completo', async ({ page }) => {
+    await abrirEstudo(page, 'fotos-e-videos');
+    const prompt = page.locator('.artifact-viewer').filter({ hasText: 'Kit Presente' });
+    await prompt.locator('.artifact-foot .btn').click();
+    let copiado = await page.evaluate(() => window.__copiado);
+    expect(copiado).toContain('Prompt em inglês:');
+    expect(copiado).toContain('Aspect ratio 4:5');
+    const roteiro = page.locator('.artifact-viewer').filter({ hasText: 'do pé à xícara' });
+    await expect(roteiro.locator('.cena')).toHaveCount(5);
+    await roteiro.locator('.artifact-foot .btn').click();
+    copiado = await page.evaluate(() => window.__copiado);
+    expect(copiado).toContain('Cena 1 (0–2 s)');
+    expect(copiado).toContain('Prompt para o gerador de vídeo');
+  });
+
+  test('estudo mostra as demonstrações completas e estáticas', async ({ page }) => {
+    await abrirEstudo(page, 'o-que-e-ia');
+    await expect(page.locator('.pp-rodada')).toHaveCount(3);
+    await expect(page.locator('.module-banner img')).toBeVisible();
+    await page.goto(url('estudo.html', 'imagens'));
+    await expect(page.locator('.visao-pino.is-visivel')).toHaveCount(5);
+    await expect(page.locator('.attachment-img img').first()).toBeVisible();
+  });
+
+  test('falas do assistente sem fórmulas robóticas e o papel dos conectores explicado', async ({ page }) => {
+    await abrirEstudo(page);
+    const r = await page.evaluate(() => {
+      const ruins = [];
+      const textos = [];
+      const visitar = (v) => {
+        if (Array.isArray(v)) return v.forEach(visitar);
+        if (v && typeof v === 'object') {
+          if (v.autor === 'assistente' && /^(Claro|Perfeito|Ótima|Ótimo|Com certeza)\b/.test(v.texto)) ruins.push(v.texto.slice(0, 40));
+          Object.keys(v).forEach((k) => visitar(v[k]));
+        } else if (typeof v === 'string') textos.push(v);
+      };
+      visitar(window.CONTEUDO.modulos);
+      return { ruins, conectores: textos.some((t) => /conectores/i.test(t)), skills: textos.some((t) => /Skills/.test(t)) };
+    });
+    expect(r.ruins).toEqual([]);
+    expect(r.conectores).toBe(true);
+    expect(r.skills).toBe(true);
   });
 });
 
@@ -323,8 +467,8 @@ test.describe('estudo', () => {
   });
 
   test('"Ver animação" reproduz a conversa no lugar', async ({ page }) => {
-    await abrirEstudo(page, 'pedir-bem');
-    const chat = page.locator('.block').filter({ hasText: 'Iterar' }).locator('.chat');
+    await abrirEstudo(page, 'ajustar');
+    const chat = page.locator('.block').filter({ hasText: 'ajuste em rodadas' }).locator('.chat');
     await expect(chat.locator('.msg')).toHaveCount(4);
     await chat.locator('.replay-btn').click();
     await expect(chat.locator('.replay-btn')).toContainText('Mostrar tudo');
@@ -344,7 +488,7 @@ test.describe('estudo', () => {
     await expect(page.locator('.module-link.is-done')).toHaveCount(1);
     await page.goto(url('index.html'));
     await expect(page.locator('.mod.is-done')).toHaveCount(1);
-    await expect(page.locator('.modulos-progresso')).toContainText('1 de 7');
+    await expect(page.locator('.modulos-progresso')).toContainText('1 de 11');
     await expect(page.locator('.modo-estudar .btn-primary')).toContainText('Projetos como base da marca');
   });
 
@@ -352,11 +496,11 @@ test.describe('estudo', () => {
     await abrirEstudo(page);
     await page.keyboard.press('ArrowRight');
     await page.keyboard.press('ArrowRight');
-    await expect(page.locator('.module-kicker')).toHaveText('Módulo 3 de 7');
-    await expect(page).toHaveURL(/#pedir-bem$/);
+    await expect(page.locator('.module-kicker')).toHaveText('Módulo 3 de 11');
+    await expect(page).toHaveURL(/#conhecendo-o-ambiente$/);
     await page.goto(url('estudo.html'));
-    await expect(page.locator('.module-kicker')).toHaveText('Módulo 3 de 7');
-    await expect(page.locator('.meta-link')).toHaveAttribute('href', 'apresentacao.html#pedir-bem');
+    await expect(page.locator('.module-kicker')).toHaveText('Módulo 3 de 11');
+    await expect(page.locator('.meta-link')).toHaveAttribute('href', 'apresentacao.html#conhecendo-o-ambiente');
   });
 
   test('índice, tempo de leitura e tour estático', async ({ page }) => {

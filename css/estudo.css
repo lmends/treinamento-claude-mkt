@@ -75,6 +75,12 @@ body.pagina-estudo { overflow-x: hidden; }
 .meta-link { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; text-decoration: none; }
 .meta-link:hover { text-decoration: underline; }
 
+.module-banner { margin: 0 0 22px; }
+.module-banner img { display: block; width: 100%; aspect-ratio: 16 / 6; object-fit: cover; border-radius: var(--radius); border: 1px solid var(--border); }
+.block-imagem .figura { max-width: 720px; }
+.block-imagem .block-text { margin-bottom: 14px; }
+.chat .attachment-img { max-width: 300px; }
+
 /* ---------- Índice ---------- */
 .toc {
   margin: 0 0 36px; padding: 14px 18px; border-radius: var(--radius);

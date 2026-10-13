@@ -14,9 +14,9 @@ ser pago, pode caprichar."
 
 A aluna é profissional de marketing que já usa IA para gerar **fotos e vídeos**. O material
 precisa (a) explicar o que é uma IA generativa, (b) mostrar como o Claude interpreta imagens,
-(c) ensinar o Claude como parceiro no fluxo de foto e vídeo — sem prometer o que ele não faz:
-o Claude **não gera fotos nem vídeos**; ele escreve prompts para geradores, roteiros e briefings,
-e analisa as imagens que ela traz — (d) aprofundar a iteração ("segundo pedido"), (e) ter mais
+(c) ensinar o Claude no fluxo de foto e vídeo, nos dois caminhos: **gerar direto na conversa
+por conectores e Skills** e, quando a ferramenta não está conectada, escrever prompts, roteiros e
+briefings e analisar as imagens que ela traz — (d) aprofundar a iteração ("segundo pedido"), (e) ter mais
 prática guiada, (f) ter imagens nos slides e (g) diálogos com cara de conversa real.
 
 ## User Scenarios & Testing *(mandatory)*
@@ -35,7 +35,8 @@ opções com chances, escolhe uma e completa a frase passo a passo.
    as palavras candidatas e suas chances; no avanço seguinte a palavra escolhida entra na frase.
 2. **Given** o estudo, **Then** a mesma demonstração aparece estática, com todas as rodadas.
 3. O módulo explica limites (pode inventar, não é buscador, não lembra de conversas antigas
-   fora de Projetos) e o que o Claude lê (texto, imagens, PDFs) e não gera (fotos, vídeos).
+   fora de Projetos), o que o Claude lê (texto, imagens, PDFs) e que fotos e vídeos dependem de
+   conectores e Skills.
 
 ### User Story 2 - Como o Claude "vê" imagens (Priority: P1)
 
@@ -110,7 +111,9 @@ vira pedaços), depois marcações com o que o modelo identifica, uma por avanç
 - **FR-006**: `pratica` aceita `passos` e `prompts` (vários, cada um com botão de copiar).
 - **FR-007**: Todas as imagens são arquivos locais em `img/` com texto alternativo vindo de
   `content.js`; continuam sem requisições externas além da fonte.
-- **FR-008**: O conteúdo afirma explicitamente que o Claude não gera fotos/vídeos.
+- **FR-008**: O conteúdo explica que o Claude gera imagens e vídeos por **conectores** e **Skills**
+  (com selo "Conector em uso" e artefato `imagem` na demonstração) e que, sem eles, atua
+  planejando, escrevendo prompts e revisando (ajuste solicitado pelo instrutor durante a 003).
 - **FR-009**: Diálogos e textos revisados para linguagem natural.
 - **FR-010**: Restrições anteriores permanecem (file://, WCAG AA, 375–1440 px, sem marca
   Anthropic, conteúdo só em `content.js`).

@@ -124,13 +124,18 @@
       var n = desc.modulo + 1;
       ctx.classe('slide-abertura');
       var blocos = T.blocosDoModulo(mod, 'deck');
-      var etapas = el('ol', { class: 'abertura-etapas' }, blocos.map(function (b, i) {
+      var LIMITE_ETAPAS = 6;
+      var visiveis = blocos.length > LIMITE_ETAPAS + 1 ? blocos.slice(0, LIMITE_ETAPAS) : blocos;
+      var etapas = el('ol', { class: 'abertura-etapas' }, visiveis.map(function (b, i) {
         return st(el('li', { text: tituloDoBloco(b) }), 5 + i * 0.6);
       }));
+      if (visiveis.length < blocos.length) {
+        etapas.appendChild(st(el('li', { class: 'is-mais', text: t('maisN', { n: blocos.length - visiveis.length }) }), 5 + visiveis.length * 0.6));
+      }
       var trilho = el('div', { class: 'abertura-trilho', 'aria-hidden': 'true' }, MODULOS.map(function (_, i) {
         return el('span', { class: i < desc.modulo ? 'is-feito' : i === desc.modulo ? 'is-atual' : '' });
       }));
-      ctx.inner.appendChild(el('div', { class: 'abertura' }, [
+      ctx.inner.appendChild(el('div', { class: 'abertura' + (mod.imagem ? ' com-imagem' : '') }, [
         st(el('span', { class: 'abertura-num', 'aria-hidden': 'true', text: (n < 10 ? '0' : '') + n }), 0),
         el('div', { class: 'abertura-texto' }, [
           st(el('p', { class: 'slide-kicker', text: t('moduloDeTotal', { n: n, total: MODULOS.length }) }), 1),
@@ -138,7 +143,8 @@
           mod.resumo ? st(el('p', { class: 'abertura-resumo', text: mod.resumo }), 3) : null,
           st(trilho, 4),
           etapas
-        ])
+        ]),
+        mod.imagem ? st(el('figure', { class: 'abertura-imagem' }, [T.imagem(mod.imagem, mod.imagemAlt || '')]), 3) : null
       ]));
       return controlador({});
     },
@@ -247,6 +253,54 @@
       Array.prototype.forEach.call(lista.children, function (li, i) { st(li, 2 + i * 0.7); });
       ctx.inner.appendChild(lista);
       return controlador({ notas: function () { return notaDoBloco(b); } });
+    },
+
+    imagem: function (desc, ctx) {
+      var b = desc.bloco;
+      var figura = T.renderImagem(b);
+      if (b.texto) {
+        ctx.classe('slide-imagem com-texto');
+        ctx.inner.appendChild(el('div', { class: 'imagem-lado' }, [
+          el('div', { class: 'imagem-texto' }, [cabecalho(desc, b.titulo), st(md(b.texto, 'slide-paragrafo'), 2)]),
+          st(figura, 3)
+        ]));
+      } else {
+        ctx.classe('slide-imagem');
+        ctx.inner.appendChild(cabecalho(desc, b.titulo));
+        ctx.inner.appendChild(st(figura, 2));
+      }
+      return controlador({ notas: function () { return notaDoBloco(b); } });
+    },
+
+    'proxima-palavra': function (desc, ctx) {
+      var b = desc.bloco;
+      ctx.classe('slide-pp');
+      ctx.inner.appendChild(cabecalho(desc, b.titulo, b.texto));
+      var pp = T.criarProximaPalavra(b, {});
+      ctx.inner.appendChild(st(pp.elemento, 2));
+      return controlador({ avancar: pp.avancar, concluido: pp.concluido, completar: pp.completar, notas: function () { return notaDoBloco(b); } });
+    },
+
+    visao: function (desc, ctx) {
+      var b = desc.bloco;
+      ctx.classe('slide-visao');
+      ctx.inner.appendChild(cabecalho(desc, b.titulo, b.texto));
+      var v = T.criarVisao(b, {});
+      st(v.elemento, 2);
+      ctx.inner.appendChild(v.elemento);
+      return controlador({ avancar: v.avancar, concluido: v.concluido, completar: v.completar, notas: function () { return notaDoBloco(b); } });
+    },
+
+    'antes-depois': function (desc, ctx) {
+      var b = desc.bloco;
+      ctx.classe('slide-ad');
+      ctx.inner.appendChild(cabecalho(desc, b.titulo, b.texto));
+      var ad = T.renderAntesDepois(b);
+      st(ad, 2);
+      ctx.inner.appendChild(ad);
+      var lista = [ad.querySelector('.ad-antes .ad-comentario'), ad.querySelector('.ad-depois'), ad.querySelector('.ad-depois .ad-comentario')].filter(Boolean);
+      var f = fragmentos(lista);
+      return controlador({ avancar: f.avancar, concluido: f.concluido, completar: f.completar, notas: function () { return notaDoBloco(b); } });
     },
 
     chat: function (desc, ctx) {
@@ -798,7 +852,11 @@
     }
     if (k === 'Home') { e.preventDefault(); irPara(0); return; }
     if (k === 'End') { e.preventDefault(); irPara(SLIDES.length - 1); return; }
-    if (/^[1-9]$/.test(k) && Number(k) <= MODULOS.length) { e.preventDefault(); irPara(primeiroDoModulo(Number(k) - 1)); return; }
+    if (/^[0-9]$/.test(k)) {
+      var mi = k === '0' ? 9 : Number(k) - 1;
+      if (mi < MODULOS.length) { e.preventDefault(); irPara(primeiroDoModulo(mi)); }
+      return;
+    }
     if (k === 'o' || k === 'O') { e.preventDefault(); abrirVisaoGeral(); return; }
     if (k === 'n' || k === 'N') { e.preventDefault(); alternarNotas(); return; }
     if (k === 'f' || k === 'F') { e.preventDefault(); alternarTelaCheia(); return; }
