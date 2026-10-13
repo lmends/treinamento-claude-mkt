@@ -277,7 +277,13 @@
         x.no.data = x.chars.slice(0, k).join('');
         resto -= x.chars.length;
       });
-      blocos.forEach(function (b) { b.hidden = b.textContent.length === 0; });
+      var ultimo = null;
+      blocos.forEach(function (b) {
+        b.hidden = b.textContent.length === 0;
+        b.classList.remove('is-caret');
+        if (!b.hidden && !/^(UL|OL)$/.test(b.tagName)) ultimo = b;
+      });
+      if (ultimo) ultimo.classList.add('is-caret');
     }
     return { total: total, mostrar: mostrar };
   }
@@ -499,7 +505,7 @@
       await a.pausa(TEMPO.pensando);
       if (a.cancelado) return;
 
-      var conteudo = el('div', { class: 'msg-content md caret', html: markdown(m.texto) });
+      var conteudo = el('div', { class: 'msg-content md', html: markdown(m.texto) });
       provisoria.bolha.textContent = '';
       provisoria.bolha.appendChild(conteudo);
       var stream = prepararStreaming(conteudo);
