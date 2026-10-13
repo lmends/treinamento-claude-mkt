@@ -1,0 +1,11 @@
+{
+  "name": "ambiente-treinamento-tests",
+  "private": true,
+  "description": "Testes E2E (apenas desenvolvimento). Não são necessários para usar o site.",
+  "scripts": {
+    "test": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.55.0"
+  }
+}
