@@ -320,7 +320,7 @@ test.describe('imagens e demonstrações', () => {
       await page.evaluate((i) => { location.hash = window.CONTEUDO.modulos[i].id; }, i);
       await expect(page.locator('.module-kicker')).toHaveText(new RegExp(`Módulo ${i + 1} de`));
       const imgs = await page.evaluate(async () => {
-        const lista = Array.from(document.querySelectorAll('#modulo img'));
+        const lista = Array.from(document.querySelectorAll('#modulo img:not(.vs-camada img)'));
         lista.forEach((img) => { img.loading = 'eager'; });
         await Promise.all(lista.map((img) => img.decode().catch(() => null)));
         return lista.map((img) => ({ src: img.getAttribute('src'), ok: img.naturalWidth > 0, alt: img.alt }));
@@ -365,21 +365,45 @@ test.describe('imagens e demonstrações', () => {
     await expect(page).toHaveURL(/#o-que-e-ia\/3$/);
   });
 
-  test('visão: grade e marcações entram passo a passo', async ({ page }) => {
+  test('visão: envio, grade, números, holofote e resposta digitada', async ({ page }) => {
     await abrirDeck(page);
     await irParaSlide(page, 'imagens/1');
     const s = slideAtual(page);
+    await expect(s.locator('.visao-envio')).toBeAttached();
+    await expect(s.locator('.visao-celula')).toHaveCount(192);
     await expect(s.locator('.visao-foto.com-grade')).toHaveCount(0);
     await page.keyboard.press('Space');
     await expect(s.locator('.visao-foto.com-grade')).toHaveCount(1);
     await page.keyboard.press('Space');
-    await expect(s.locator('.visao-passo')).toHaveText('Etapa 3 de 4');
+    await expect(s.locator('.visao-foto.com-numeros')).toHaveCount(1);
+    await page.keyboard.press('Space');
+    await expect(s.locator('.visao-passo')).toHaveText('Etapa 4 de 5');
     for (let n = 1; n <= 5; n++) {
       await page.keyboard.press('Space');
       await expect(s.locator('.visao-pino.is-visivel')).toHaveCount(n);
+      await expect(s.locator('.visao-foto.com-foco')).toHaveCount(1);
     }
     await page.keyboard.press('Space');
-    await expect(s.locator('.visao-passo')).toHaveText('Etapa 4 de 4');
+    await expect(s.locator('.visao-passo')).toHaveText('Etapa 5 de 5');
+    await expect(s.locator('.visao-foto.com-foco')).toHaveCount(0);
+    await expect(s.locator('.visao-resposta')).toHaveClass(/is-visivel/);
+    await expect(s.locator('.visao-resposta p')).toContainText('Café de Inverno', { timeout: 8000 });
+  });
+
+  test('vídeo simulado toca sozinho no slide, pula de cena e pausa', async ({ page }) => {
+    await abrirDeck(page);
+    await irParaSlide(page, 'fotos-e-videos/10');
+    const s = slideAtual(page);
+    await expect(s.locator('.vs-tela')).toBeVisible();
+    await expect(s.locator('.vs-cena-btn')).toHaveCount(5);
+    await expect(s.locator('.vs-tempo')).not.toHaveText(/^0:00/, { timeout: 5000 });
+    await expect(s.locator('.vs-player')).not.toHaveClass(/is-pausado/);
+    await s.locator('.vs-cena-btn').nth(3).click();
+    await expect(s.locator('.vs-cena-btn').nth(3)).toHaveAttribute('aria-current', 'true');
+    await expect(s.locator('.vs-legenda')).toHaveText('Chocolate e canela, sem aditivo');
+    await expect(s.locator('.vs-selo')).toHaveText('Gravado na loja');
+    await s.locator('.vs-play').click();
+    await expect(s.locator('.vs-player')).toHaveClass(/is-pausado/);
   });
 
   test('antes e depois de imagem revela o prompt estruturado', async ({ page }) => {
@@ -417,12 +441,23 @@ test.describe('imagens e demonstrações', () => {
     expect(copiado).toContain('Prompt para o gerador de vídeo');
   });
 
+  test('vídeo no estudo só começa ao clicar', async ({ page }) => {
+    await abrirEstudo(page, 'fotos-e-videos');
+    const v = page.locator('.block-video');
+    await expect(v.locator('.vs-player')).toHaveClass(/is-pausado/);
+    await page.waitForTimeout(1200);
+    await expect(v.locator('.vs-tempo')).toHaveText(/^0:00/);
+    await v.locator('.vs-centro').click();
+    await expect(v.locator('.vs-tempo')).not.toHaveText(/^0:00/, { timeout: 5000 });
+  });
+
   test('estudo mostra as demonstrações completas e estáticas', async ({ page }) => {
     await abrirEstudo(page, 'o-que-e-ia');
     await expect(page.locator('.pp-rodada')).toHaveCount(3);
     await expect(page.locator('.module-banner img')).toBeVisible();
     await page.goto(url('estudo.html', 'imagens'));
     await expect(page.locator('.visao-pino.is-visivel')).toHaveCount(5);
+    await expect(page.locator('.visao-resposta.is-visivel')).toContainText('Café de Inverno');
     await expect(page.locator('.attachment-img img').first()).toBeVisible();
   });
 
@@ -523,6 +558,33 @@ test.describe('estudo', () => {
       await expect(page.locator('.compare-depois')).toBeHidden();
       await tabs.getByRole('tab', { name: 'Depois' }).click();
       await expect(page.locator('.compare-depois')).toBeVisible();
+    }
+  });
+
+  test('busca rápida: atalho, acentos, trecho destacado e navegação', async ({ page }, testInfo) => {
+    await abrirEstudo(page, 'boas-vindas');
+    await page.keyboard.press('/');
+    const campo = page.locator('#busca-campo');
+    await expect(campo).toBeFocused();
+    await campo.fill('cafe de inverno canela');
+    const itens = page.locator('.busca-item');
+    await expect(itens.first()).toBeVisible();
+    await expect(page.locator('.busca-trecho mark').first()).toBeVisible();
+    await campo.fill('xyzqw');
+    await expect(page.locator('.busca-status')).toContainText('Nada encontrado');
+    await campo.fill('holofote prompt de imagem');
+    await campo.fill('anatomia prompt imagem');
+    await expect(itens.first()).toContainText('Anatomia de um prompt de imagem');
+    await page.keyboard.press('ArrowDown');
+    await page.keyboard.press('Enter');
+    await expect(page).toHaveURL(/#fotos-e-videos$/);
+    await expect(page.locator('.block.is-encontrado')).toHaveCount(1);
+    await expect(page.locator('.busca-painel')).toBeHidden();
+    if (!ehDesktop(testInfo)) {
+      await page.locator('.busca-abrir').click();
+      await expect(campo).toBeVisible();
+      await page.keyboard.press('Escape');
+      await expect(campo).toBeHidden();
     }
   });
 

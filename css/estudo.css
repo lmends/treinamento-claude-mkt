@@ -30,6 +30,39 @@ body.pagina-estudo { overflow-x: hidden; }
 .reading-bar { position: absolute; left: 0; right: 0; bottom: -1px; height: 3px; pointer-events: none; }
 .reading-bar span { display: block; height: 100%; background: var(--accent); transform-origin: 0 50%; transform: scaleX(0); transition: transform .12s linear; }
 
+/* ---------- Busca ---------- */
+.busca { position: relative; display: flex; align-items: center; }
+.busca-abrir { display: none; }
+.busca-caixa { position: relative; display: flex; align-items: center; }
+.busca-lupa { position: absolute; left: 12px; color: var(--text-2); pointer-events: none; }
+.busca-campo {
+  width: clamp(200px, 22vw, 300px); height: 38px; padding: 0 36px 0 38px; border-radius: 999px;
+  border: 1px solid var(--border-strong); background: var(--surface); color: var(--text); font: inherit; font-size: .9rem;
+  transition: border-color var(--dur), box-shadow var(--dur), width .3s var(--ease);
+}
+.busca-campo::placeholder { color: var(--text-2); }
+.busca-campo:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 16%, transparent); width: clamp(240px, 28vw, 360px); }
+.busca-campo::-webkit-search-cancel-button { display: none; }
+.busca-kbd { position: absolute; right: 12px; pointer-events: none; }
+.busca-campo:focus ~ .busca-kbd { display: none; }
+.busca-fechar { display: none; }
+.busca-painel {
+  position: absolute; top: calc(100% + 8px); right: 0; width: min(520px, 92vw); max-height: min(70vh, 560px); overflow-y: auto;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 16px; box-shadow: var(--shadow-lg); padding: 8px;
+  z-index: 40; animation: entra .25s var(--ease) both;
+}
+.busca-status { margin: 4px 8px 8px; font-size: .8rem; color: var(--text-2); }
+.busca-lista { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.busca-lista li + li { margin: 0; }
+.busca-item { display: flex; flex-direction: column; gap: 2px; padding: 10px 12px; border-radius: 10px; cursor: pointer; }
+.busca-item:hover, .busca-item[aria-selected="true"] { background: var(--accent-soft); }
+.busca-modulo { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--accent); }
+.busca-titulo { font-size: .95rem; }
+.busca-trecho { font-size: .86rem; color: var(--text-2); line-height: 1.45; }
+.busca-trecho mark { background: color-mix(in srgb, var(--accent) 25%, transparent); color: var(--text); border-radius: 3px; padding: 0 2px; }
+.block.is-encontrado, .module-head h1.is-encontrado { animation: encontrado 1.8s ease both; border-radius: var(--radius); }
+@keyframes encontrado { 0%, 40% { box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 45%, transparent); background: var(--accent-soft); } 100% { box-shadow: 0 0 0 4px transparent; background: transparent; } }
+
 /* ---------- Layout ---------- */
 .layout { display: grid; grid-template-columns: var(--sidebar-w) minmax(0, 1fr); min-height: calc(100vh - var(--topbar-h)); }
 
@@ -159,11 +192,30 @@ body.pagina-estudo { overflow-x: hidden; }
   .main { padding-top: 28px; }
 }
 
+@media (max-width: 1100px) {
+  .topbar-progress .progress-track { display: none; }
+}
+
+@media (max-width: 760px) {
+  .busca { margin-left: auto; }
+  .busca-abrir { display: inline-grid; }
+  .busca-caixa { display: none; }
+  body.busca-aberta .busca-caixa {
+    display: flex; position: fixed; z-index: 60; top: 0; left: 0; right: 0; height: var(--topbar-h);
+    padding: 0 10px; gap: 6px; background: var(--bg); border-bottom: 1px solid var(--border);
+  }
+  body.busca-aberta .busca-lupa { left: 22px; }
+  body.busca-aberta .busca-campo, body.busca-aberta .busca-campo:focus { flex: 1; width: auto; }
+  body.busca-aberta .busca-kbd { display: none; }
+  body.busca-aberta .busca-fechar { display: inline-grid; }
+  body.busca-aberta .busca-painel { position: fixed; top: calc(var(--topbar-h) + 6px); left: 8px; right: 8px; width: auto; max-height: calc(100vh - var(--topbar-h) - 20px); }
+}
+
 @media (max-width: 640px) {
   :root { --topbar-h: 58px; }
   .topbar { padding: 0 10px; gap: 6px; }
   .brand-text, .topbar-progress { display: none; }
-  .topbar-actions { margin-left: auto; }
+  .topbar-actions { margin-left: 0; }
   .chat-log { padding: 14px; }
   .chat-head { padding-left: 14px; padding-right: 10px; }
   .composer { margin: 0 14px 10px; }

@@ -54,6 +54,9 @@ texto aparecendo) e os resultados (carrossel, legendas, e-mail) surgem ao lado d
 - **Ver animação** reproduz qualquer conversa no lugar; **Mostrar tudo** encerra a animação.
 - Os resultados aparecem logo abaixo da resposta, com abas e botão **Copiar texto**.
 - Índice "Nesta página", tempo estimado de leitura e barra de progresso de leitura.
+- **Busca rápida** no topo (atalho **/** ou **Ctrl+K**): procura em todos os módulos, ignora
+  acentos ("cafe" encontra "café"), mostra o trecho com o termo destacado e leva direto à seção.
+  Use **↑ ↓** e **Enter** para escolher; **Esc** fecha.
 - **Concluí este módulo** marca o módulo (✓ na lista lateral e na capa).
 - Setas **←** **→** trocam de módulo. Endereço por módulo, ex.: `estudo.html#skills`.
 
@@ -171,7 +174,8 @@ use o campo `slide` para trocar só o que aparece na apresentação:
 | `frase` | `texto` (frase de impacto), `apoio` (opcional), `icone` (opcional) |
 | `imagem` | `titulo`, `texto` (opcional, fica ao lado da imagem), `src`, `alt`, `legenda` |
 | `proxima-palavra` | `titulo`, `texto`, `rodadas: [{ frase, opcoes: [{ palavra, chance }], escolhida }]`, `conclusao` |
-| `visao` | `titulo`, `src`, `alt`, `etapas: [{ titulo, texto, grade, marcacoes }]`, `marcacoes: [{ x, y, rotulo, lado }]` (x e y em %) |
+| `visao` | `titulo`, `src`, `alt`, `arquivo`, `resposta`, `etapas: [{ titulo, texto, grade, numeros, marcacoes, resposta, semGrade }]`, `marcacoes: [{ x, y, rotulo, lado }]` (x e y em %) |
+| `video` | `titulo`, `texto`, `alt`, `cenas: [{ tempo, visual, foco, efeito, origem, textoTela, audio }]` — prévia simulada de Reels; `efeito`: `zoom-in`, `zoom-out`, `pan-esquerda`, `pan-direita`; `origem`: `ia` ou `loja` |
 | `antes-depois` | `titulo`, `texto`, `antes: { rotulo, prompt, src, alt, comentario }`, `depois: { … }` |
 | `cards` | `titulo`, `itens: [{ icone, titulo, texto }]` |
 | `visao-geral` | `titulo` (lista os módulos automaticamente) |

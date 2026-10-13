@@ -288,7 +288,23 @@
       var v = T.criarVisao(b, {});
       st(v.elemento, 2);
       ctx.inner.appendChild(v.elemento);
-      return controlador({ avancar: v.avancar, concluido: v.concluido, completar: v.completar, notas: function () { return notaDoBloco(b); } });
+      return controlador({ avancar: v.avancar, concluido: v.concluido, completar: v.completar, destruir: v.destruir, notas: function () { return notaDoBloco(b); } });
+    },
+
+    video: function (desc, ctx) {
+      var b = desc.bloco;
+      ctx.classe('slide-video');
+      var v = T.criarVideoSimulado(b, {});
+      ctx.inner.appendChild(el('div', { class: 'video-lado' }, [
+        el('div', { class: 'video-texto' }, [cabecalho(desc, b.titulo, b.texto), st(v.lista, 3)]),
+        st(v.player, 2)
+      ]));
+      // O vídeo começa sozinho logo depois da transição do slide
+      var espera = T.semMovimento() ? null : setTimeout(function () { v.tocar(); }, 900);
+      return controlador({
+        notas: function () { return notaDoBloco(b); },
+        destruir: function () { clearTimeout(espera); v.destruir(); }
+      });
     },
 
     'antes-depois': function (desc, ctx) {

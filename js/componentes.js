@@ -980,13 +980,29 @@
     return { elemento: raiz, avancar: avancar, concluido: concluido, completar: completar };
   }
 
-  /* Como a IA "vê" uma imagem: foto, grade de pedaços e marcações.
-     Etapas com { titulo, texto, grade, marcacoes }. estatico: estado final. */
+  /* Como a IA "vê" uma imagem: a foto chega, vira uma grade de pedaços,
+     os pedaços viram números, um holofote passeia pelas marcações e a
+     resposta é digitada sobre a foto.
+     Etapas: { titulo, texto, grade, numeros, marcacoes, resposta, semGrade }.
+     estatico: true mostra o estado final (estudo). */
   function criarVisao(b, opcoes) {
     opcoes = opcoes || {};
     var etapas = b.etapas || [];
     var marcacoes = b.marcacoes || [];
-    var grade = el('div', { class: 'visao-grade', 'aria-hidden': 'true' });
+    var COLUNAS = 16, LINHAS = 12;
+    var NUMEROS = ['0.42', '0.87', '0.13', '0.66', '0.29', '0.94', '0.51', '0.08', '0.73', '0.35'];
+
+    var celulas = el('div', { class: 'visao-celulas', 'aria-hidden': 'true' });
+    for (var r = 0; r < LINHAS; r++) {
+      for (var c = 0; c < COLUNAS; c++) {
+        var celula = el('span', { class: 'visao-celula', style: { '--d': String(r + c) } });
+        if ((r * COLUNAS + c) % 7 === 3) {
+          celula.appendChild(el('i', { text: NUMEROS[(r + c * 3) % NUMEROS.length], style: { '--n': String((r * 5 + c) % 9) } }));
+        }
+        celulas.appendChild(celula);
+      }
+    }
+    var foco = el('div', { class: 'visao-foco', 'aria-hidden': 'true' });
     var pinos = marcacoes.map(function (m, i) {
       var lado = m.lado || (m.x > 58 ? 'esquerda' : 'direita');
       var alinhar = m.x > 80 ? ' alinha-dir' : m.x < 20 ? ' alinha-esq' : '';
@@ -995,12 +1011,20 @@
         style: { left: m.x + '%', top: m.y + '%' }
       }, [el('span', { class: 'visao-num', 'aria-hidden': 'true', text: String(i + 1) }), el('span', { class: 'visao-rotulo', text: m.rotulo })]);
     });
-    var foto = el('div', { class: 'visao-foto' }, [imagem(b.src, b.alt)].concat([grade]).concat(pinos));
+    var respostaTexto = el('p');
+    var resposta = b.resposta ? el('div', { class: 'visao-resposta' }, [
+      el('span', { class: 'visao-resposta-ico', 'aria-hidden': 'true' }, [icone('assistente', 16)]), respostaTexto
+    ]) : null;
+    var envio = el('div', { class: 'visao-envio', 'aria-hidden': 'true' }, [
+      icone('clipe', 14), el('span', { text: b.arquivo || t('visaoEnviando') }), el('span', { class: 'visao-envio-barra' }, [el('i')])
+    ]);
+    var foto = el('div', { class: 'visao-foto' }, [imagem(b.src, b.alt), celulas, foco].concat(pinos).concat([resposta, envio]));
     var lista = el('ol', { class: 'visao-marcas sr-only' }, marcacoes.map(function (m) { return el('li', { text: m.rotulo }); }));
 
     if (opcoes.estatico) {
       foto.classList.add('com-grade', 'estatico');
       pinos.forEach(function (p) { p.classList.add('is-visivel'); });
+      if (resposta) { respostaTexto.textContent = b.resposta; resposta.classList.add('is-visivel'); }
       return {
         elemento: el('div', { class: 'visao' }, [foto, el('ol', { class: 'visao-etapas' }, etapas.map(function (e) {
           return el('li', null, [el('strong', { text: e.titulo }), md(e.texto)]);
@@ -1015,13 +1039,33 @@
       if (i > 0) acoes.push({ etapa: i });
       if (e.marcacoes) marcacoes.forEach(function (_, k) { acoes.push({ etapa: i, pino: k }); });
     });
-    var feitas = 0, etapaAtual = 0, pinosVisiveis = 0;
+    var feitas = 0;
+    var digitando = null;
 
-    function mostrarEtapa(i) {
-      etapaAtual = i;
+    function digitarResposta(instantaneo) {
+      if (!resposta) return;
+      clearInterval(digitando);
+      resposta.classList.add('is-visivel');
+      var letras = Array.from(b.resposta);
+      if (instantaneo || semMovimento()) { respostaTexto.textContent = b.resposta; return; }
+      var n = 0;
+      respostaTexto.textContent = '';
+      respostaTexto.classList.add('is-caret');
+      digitando = setInterval(function () {
+        n = Math.min(letras.length, n + 2);
+        respostaTexto.textContent = letras.slice(0, n).join('');
+        if (n >= letras.length) { clearInterval(digitando); digitando = null; respostaTexto.classList.remove('is-caret'); }
+      }, 28);
+    }
+
+    function mostrarEtapa(i, instantaneo) {
       var e = etapas[i] || {};
-      var grades = etapas.slice(0, i + 1).some(function (x) { return x.grade; });
-      foto.classList.toggle('com-grade', !!grades && !e.semGrade);
+      var comGrade = etapas.slice(0, i + 1).some(function (x) { return x.grade; }) && !e.semGrade;
+      foto.classList.toggle('com-grade', comGrade);
+      foto.classList.toggle('com-numeros', !!e.numeros);
+      if (!e.marcacoes) foto.classList.remove('com-foco');
+      foto.classList.toggle('com-resposta', !!e.resposta);
+      if (e.resposta) digitarResposta(instantaneo);
       painel.textContent = '';
       painel.appendChild(el('div', { class: 'visao-painel-in' }, [
         el('p', { class: 'visao-passo', text: t('visaoEtapa', { atual: i + 1, total: etapas.length }) }),
@@ -1031,9 +1075,18 @@
       painel.appendChild(pontos);
       Array.prototype.forEach.call(pontos.children, function (p, j) { p.className = j < i ? 'is-feito' : j === i ? 'is-atual' : ''; });
     }
-    function aplicar(acao) {
-      if (acao.pino != null) { pinos[acao.pino].classList.add('is-visivel'); pinosVisiveis += 1; }
-      else mostrarEtapa(acao.etapa);
+
+    function aplicar(acao, instantaneo) {
+      if (acao.pino != null) {
+        var m = marcacoes[acao.pino];
+        pinos.forEach(function (p) { p.classList.remove('is-atual'); });
+        pinos[acao.pino].classList.add('is-visivel', 'is-atual');
+        foco.style.setProperty('--fx', m.x + '%');
+        foco.style.setProperty('--fy', m.y + '%');
+        foto.classList.add('com-foco');
+      } else {
+        mostrarEtapa(acao.etapa, instantaneo);
+      }
     }
     mostrarEtapa(0);
 
@@ -1041,7 +1094,177 @@
       elemento: el('div', { class: 'visao' }, [foto, painel, lista]),
       avancar: function () { if (feitas >= acoes.length) return false; aplicar(acoes[feitas]); feitas += 1; return true; },
       concluido: function () { return feitas >= acoes.length; },
-      completar: function () { while (feitas < acoes.length) { aplicar(acoes[feitas]); feitas += 1; } }
+      completar: function () {
+        while (feitas < acoes.length) { aplicar(acoes[feitas], true); feitas += 1; }
+        foto.classList.add('sem-envio');
+      },
+      destruir: function () { clearInterval(digitando); digitando = null; }
+    };
+  }
+
+  /* ---------- Vídeo simulado (prévia de Reels) ---------- */
+
+  function duracaoDaCena(c) {
+    if (c.duracao) return Number(c.duracao);
+    var m = String(c.tempo || '').match(/(\d+(?:[.,]\d+)?)\s*[–-]\s*(\d+(?:[.,]\d+)?)/);
+    return m ? Math.max(0.5, parseFloat(m[2].replace(',', '.')) - parseFloat(m[1].replace(',', '.'))) : 3;
+  }
+
+  function formatarTempo(s) {
+    s = Math.max(0, Math.floor(s));
+    return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
+  }
+
+  /* Player vertical que toca as cenas em sequência, com zoom/pan nas imagens,
+     legendas, progresso por cena e selo de origem.
+     Retorna { elemento, player, lista, tocar, pausar, reiniciar, irParaCena, destruir }. */
+  function criarVideoSimulado(b, opcoes) {
+    opcoes = opcoes || {};
+    var cenas = b.cenas || [];
+    var duracoes = cenas.map(duracaoDaCena);
+    var inicios = [];
+    var total = 0;
+    duracoes.forEach(function (d) { inicios.push(total); total += d; });
+    var tempoAtual = 0, tocando = false, quadro = null, ultimo = 0, cenaAtual = -1;
+
+    var camadas = el('div', { class: 'vs-camadas' });
+    var barras = el('div', { class: 'vs-progresso', 'aria-hidden': 'true' }, cenas.map(function () { return el('span', null, [el('i')]); }));
+    var selo = el('span', { class: 'vs-selo' });
+    var legenda = el('div', { class: 'vs-legenda', 'aria-live': 'polite' });
+    var perfil = el('div', { class: 'vs-perfil', 'aria-hidden': 'true' }, [
+      el('span', { class: 'vs-avatar', text: MARCA.iniciais || '' }), el('strong', { text: MARCA.usuario || '' })
+    ]);
+    var botaoCentro = el('button', { type: 'button', class: 'vs-centro', 'aria-label': t('videoTocar') }, [icone('play', 34)]);
+    var tela = el('div', { class: 'vs-tela', role: 'group', 'aria-label': b.alt || t('videoPrevia') }, [camadas, barras, selo, perfil, legenda, botaoCentro]);
+
+    var rotuloPlay = el('span', { text: t('videoTocar') });
+    var btnPlay = el('button', { type: 'button', class: 'btn btn-sm btn-primary vs-play', 'data-blur-on-click': true }, [icone('play', 16), rotuloPlay]);
+    var btnReiniciar = el('button', { type: 'button', class: 'btn btn-sm btn-ghost', 'data-blur-on-click': true, onclick: function () { irParaCena(0, true); } }, [icone('reiniciar', 16), el('span', { text: t('videoRecomecar') })]);
+    var relogio = el('span', { class: 'vs-tempo', text: '0:00 / ' + formatarTempo(total) });
+    var audio = el('p', { class: 'vs-audio' });
+    var player = el('div', { class: 'vs-player is-pausado' }, [
+      tela,
+      el('div', { class: 'vs-controles' }, [btnPlay, btnReiniciar, relogio]),
+      audio,
+      el('p', { class: 'vs-aviso', text: t('videoAviso') })
+    ]);
+
+    var itens = cenas.map(function (c, i) {
+      return el('li', null, [el('button', {
+        type: 'button', class: 'vs-cena-btn', 'data-blur-on-click': true,
+        onclick: function () { irParaCena(i, true); }
+      }, [
+        el('span', { class: 'vs-cena-num', text: String(i + 1) }),
+        el('span', { class: 'vs-cena-info' }, [
+          el('span', { class: 'vs-cena-tempo', text: c.tempo || '' }),
+          el('span', { class: 'vs-cena-texto', text: c.textoTela || '' })
+        ]),
+        c.origem ? el('span', { class: 'vs-origem o-' + c.origem, text: t('origem_' + c.origem) }) : null
+      ])]);
+    });
+    var lista = el('ol', { class: 'vs-cenas', 'aria-label': t('videoCenas') }, itens);
+    var raiz = el('div', { class: 'video-sim' }, [player, lista]);
+
+    function mostrarCena(i) {
+      if (i === cenaAtual) return;
+      cenaAtual = i;
+      var c = cenas[i] || {};
+      var desde = Math.max(0, tempoAtual - inicios[i]);
+      var camada = el('div', {
+        class: 'vs-camada efeito-' + (c.efeito || 'zoom-in'),
+        style: { '--dur': duracoes[i] + 's', '--atraso': (-desde) + 's', '--foco': c.foco || '50% 50%' }
+      }, [c.visual ? imagem(c.visual, '') : el('div', { class: 'vs-vazio' })]);
+      Array.prototype.forEach.call(camadas.children, function (velha) {
+        velha.classList.add('saindo');
+        setTimeout(function () { if (velha.parentNode) velha.parentNode.removeChild(velha); }, 700);
+      });
+      camadas.appendChild(camada);
+      selo.textContent = c.origem ? t('origem_' + c.origem) : '';
+      selo.className = 'vs-selo' + (c.origem ? ' o-' + c.origem : '');
+      legenda.textContent = '';
+      if (c.textoTela) legenda.appendChild(el('p', { text: c.textoTela }));
+      audio.textContent = c.audio ? '♪ ' + c.audio : '';
+      itens.forEach(function (li, j) {
+        var bt = li.firstChild;
+        if (j === i) bt.setAttribute('aria-current', 'true'); else bt.removeAttribute('aria-current');
+      });
+    }
+
+    function cenaNoTempo(s) {
+      for (var i = cenas.length - 1; i >= 0; i--) if (s >= inicios[i]) return i;
+      return 0;
+    }
+
+    function atualizar() {
+      Array.prototype.forEach.call(barras.children, function (barra, i) {
+        var frac = tempoAtual >= inicios[i] + duracoes[i] ? 1 : tempoAtual <= inicios[i] ? 0 : (tempoAtual - inicios[i]) / duracoes[i];
+        barra.firstChild.style.width = (frac * 100) + '%';
+      });
+      relogio.textContent = formatarTempo(tempoAtual) + ' / ' + formatarTempo(total);
+    }
+
+    function laco(agora) {
+      var dt = Math.min(0.1, (agora - ultimo) / 1000);
+      ultimo = agora;
+      tempoAtual += dt;
+      if (tempoAtual >= total) {
+        tempoAtual = total;
+        atualizar();
+        pausar();
+        player.classList.add('is-fim');
+        return;
+      }
+      mostrarCena(cenaNoTempo(tempoAtual));
+      atualizar();
+      quadro = requestAnimationFrame(laco);
+    }
+
+    function tocar() {
+      if (tocando || !cenas.length) return;
+      if (tempoAtual >= total) { tempoAtual = 0; cenaAtual = -1; mostrarCena(0); }
+      tocando = true;
+      player.classList.remove('is-pausado', 'is-fim');
+      rotuloPlay.textContent = t('videoPausar');
+      btnPlay.replaceChild(icone('pausa', 16), btnPlay.firstChild);
+      botaoCentro.setAttribute('aria-label', t('videoPausar'));
+      ultimo = performance.now();
+      quadro = requestAnimationFrame(laco);
+    }
+
+    function pausar() {
+      tocando = false;
+      cancelAnimationFrame(quadro);
+      quadro = null;
+      player.classList.add('is-pausado');
+      rotuloPlay.textContent = t('videoTocar');
+      btnPlay.replaceChild(icone('play', 16), btnPlay.firstChild);
+      botaoCentro.setAttribute('aria-label', t('videoTocar'));
+    }
+
+    function alternar() { if (tocando) pausar(); else tocar(); }
+
+    function irParaCena(i, tocarDepois) {
+      i = limitar(i, 0, cenas.length - 1);
+      tempoAtual = inicios[i] + 0.001;
+      cenaAtual = -1;
+      player.classList.remove('is-fim');
+      mostrarCena(i);
+      atualizar();
+      if (tocarDepois) tocar();
+    }
+
+    btnPlay.addEventListener('click', alternar);
+    botaoCentro.addEventListener('click', alternar);
+    tela.addEventListener('click', function (e) { if (e.target === tela || camadas.contains(e.target)) alternar(); });
+
+    if (cenas.length) { mostrarCena(0); atualizar(); }
+
+    return {
+      elemento: raiz, player: player, lista: lista,
+      tocar: tocar, pausar: pausar, irParaCena: irParaCena,
+      tocando: function () { return tocando; },
+      tempo: function () { return tempoAtual; },
+      destruir: pausar
     };
   }
 
@@ -1070,7 +1293,8 @@
     renderProjeto: renderProjeto, renderSkill: renderSkill, renderTabela: renderTabela,
     renderMock: renderMock, renderPratica: renderPratica, renderLinks: renderLinks,
     imagem: imagem, renderImagem: renderImagem, criarProximaPalavra: criarProximaPalavra,
-    criarVisao: criarVisao, renderAntesDepois: renderAntesDepois
+    criarVisao: criarVisao, renderAntesDepois: renderAntesDepois,
+    criarVideoSimulado: criarVideoSimulado
   };
   Object.keys(exportar).forEach(function (k) { T[k] = exportar[k]; });
 })();

@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <defs>
+    <linearGradient id="parede" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#C98F68"/>
+      <stop offset="1" stop-color="#A86F4C"/>
+    </linearGradient>
+    <linearGradient id="corpo" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#3E5A4B"/>
+      <stop offset=".5" stop-color="#2F4A3C"/>
+      <stop offset="1" stop-color="#22362C"/>
+    </linearGradient>
+    <linearGradient id="metal" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#E7E2DA"/>
+      <stop offset=".5" stop-color="#C9C2B6"/>
+      <stop offset="1" stop-color="#9C958A"/>
+    </linearGradient>
+    <radialGradient id="janela" cx=".45" cy=".4" r=".7">
+      <stop offset="0" stop-color="#F2B66A"/>
+      <stop offset=".6" stop-color="#B9672C"/>
+      <stop offset="1" stop-color="#6B3414"/>
+    </radialGradient>
+    <radialGradient id="bandeja" cx=".5" cy=".45" r=".6">
+      <stop offset="0" stop-color="#6B3F22"/>
+      <stop offset="1" stop-color="#3A2112"/>
+    </radialGradient>
+    <radialGradient id="luz" cx=".5" cy=".5" r=".5">
+      <stop offset="0" stop-color="#FFD99A" stop-opacity=".55"/>
+      <stop offset="1" stop-color="#FFD99A" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="blur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="6"/></filter>
+  </defs>
+
+  <!-- Parede de tijolos -->
+  <rect width="800" height="600" fill="url(#parede)"/>
+  <g stroke="#8E5A3B" stroke-width="3" opacity=".45">
+    <line x1="0" y1="60" x2="800" y2="60"/><line x1="0" y1="120" x2="800" y2="120"/><line x1="0" y1="180" x2="800" y2="180"/>
+    <line x1="0" y1="240" x2="800" y2="240"/><line x1="0" y1="300" x2="800" y2="300"/><line x1="0" y1="360" x2="800" y2="360"/>
+  </g>
+  <g stroke="#8E5A3B" stroke-width="3" opacity=".35">
+    <line x1="100" y1="0" x2="100" y2="60"/><line x1="300" y1="0" x2="300" y2="60"/><line x1="500" y1="0" x2="500" y2="60"/><line x1="700" y1="0" x2="700" y2="60"/>
+    <line x1="200" y1="60" x2="200" y2="120"/><line x1="400" y1="60" x2="400" y2="120"/><line x1="600" y1="60" x2="600" y2="120"/>
+    <line x1="100" y1="120" x2="100" y2="180"/><line x1="300" y1="120" x2="300" y2="180"/><line x1="500" y1="120" x2="500" y2="180"/><line x1="700" y1="120" x2="700" y2="180"/>
+    <line x1="200" y1="180" x2="200" y2="240"/><line x1="400" y1="180" x2="400" y2="240"/><line x1="600" y1="180" x2="600" y2="240"/>
+    <line x1="100" y1="240" x2="100" y2="300"/><line x1="300" y1="240" x2="300" y2="300"/><line x1="500" y1="240" x2="500" y2="300"/><line x1="700" y1="240" x2="700" y2="300"/>
+    <line x1="200" y1="300" x2="200" y2="360"/><line x1="400" y1="300" x2="400" y2="360"/><line x1="600" y1="300" x2="600" y2="360"/>
+  </g>
+  <circle cx="400" cy="220" r="260" fill="url(#luz)"/>
+
+  <!-- Piso -->
+  <rect y="430" width="800" height="170" fill="#5A3A26"/>
+  <rect y="426" width="800" height="6" fill="#7A5236"/>
+
+  <!-- Chaminé -->
+  <rect x="520" y="0" width="34" height="170" fill="url(#metal)"/>
+  <rect x="514" y="160" width="46" height="16" rx="4" fill="#9C958A"/>
+
+  <!-- Torrador -->
+  <ellipse cx="400" cy="440" rx="220" ry="18" fill="#000" opacity=".35" filter="url(#blur)"/>
+  <rect x="220" y="196" width="320" height="214" rx="26" fill="url(#corpo)"/>
+  <rect x="260" y="410" width="22" height="30" fill="#1B2A22"/><rect x="478" y="410" width="22" height="30" fill="#1B2A22"/>
+  <path d="M300 196 L330 120 L430 120 L460 196 Z" fill="url(#metal)"/>
+  <rect x="320" y="104" width="120" height="18" rx="6" fill="#B9B2A6"/>
+  <rect x="460" y="174" width="80" height="22" rx="8" fill="#C9C2B6"/>
+  <!-- Tambor com janela -->
+  <circle cx="350" cy="300" r="78" fill="url(#metal)"/>
+  <circle cx="350" cy="300" r="62" fill="url(#janela)"/>
+  <g fill="#3E2414" opacity=".85">
+    <ellipse cx="322" cy="318" rx="9" ry="6" transform="rotate(20 322 318)"/>
+    <ellipse cx="346" cy="330" rx="9" ry="6" transform="rotate(-30 346 330)"/>
+    <ellipse cx="372" cy="322" rx="9" ry="6" transform="rotate(60 372 322)"/>
+    <ellipse cx="336" cy="300" rx="9" ry="6" transform="rotate(-10 336 300)"/>
+    <ellipse cx="362" cy="298" rx="9" ry="6" transform="rotate(40 362 298)"/>
+    <ellipse cx="384" cy="306" rx="9" ry="6" transform="rotate(-50 384 306)"/>
+  </g>
+  <path d="M308 262 A60 60 0 0 1 392 262" fill="none" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round" opacity=".35"/>
+  <!-- Painel -->
+  <rect x="452" y="230" width="64" height="96" rx="10" fill="#1B2A22"/>
+  <circle cx="484" cy="258" r="13" fill="#E3A33A"/>
+  <circle cx="484" cy="258" r="5" fill="#1B2A22"/>
+  <rect x="466" y="284" width="36" height="8" rx="4" fill="#8CC5A3"/>
+  <rect x="466" y="300" width="24" height="8" rx="4" fill="#E7E2DA"/>
+  <!-- Bica de saída -->
+  <path d="M410 360 L470 360 L486 396 L426 396 Z" fill="url(#metal)"/>
+
+  <!-- Bandeja de resfriamento -->
+  <ellipse cx="560" cy="470" rx="170" ry="40" fill="#2A190E"/>
+  <ellipse cx="560" cy="462" rx="164" ry="36" fill="#C9C2B6"/>
+  <ellipse cx="560" cy="460" rx="150" ry="30" fill="url(#bandeja)"/>
+  <g fill="#2A170C">
+    <ellipse cx="480" cy="458" rx="8" ry="5"/><ellipse cx="500" cy="468" rx="8" ry="5"/><ellipse cx="522" cy="452" rx="8" ry="5"/>
+    <ellipse cx="546" cy="466" rx="8" ry="5"/><ellipse cx="570" cy="454" rx="8" ry="5"/><ellipse cx="596" cy="470" rx="8" ry="5"/>
+    <ellipse cx="618" cy="456" rx="8" ry="5"/><ellipse cx="640" cy="466" rx="8" ry="5"/><ellipse cx="660" cy="454" rx="8" ry="5"/>
+    <ellipse cx="530" cy="476" rx="8" ry="5"/><ellipse cx="584" cy="480" rx="8" ry="5"/><ellipse cx="456" cy="466" rx="8" ry="5"/>
+  </g>
+  <g fill="#7A4A2A">
+    <ellipse cx="508" cy="458" rx="8" ry="5"/><ellipse cx="558" cy="474" rx="8" ry="5"/><ellipse cx="606" cy="462" rx="8" ry="5"/><ellipse cx="648" cy="476" rx="8" ry="5"/>
+  </g>
+  <line x1="560" y1="460" x2="680" y2="448" stroke="#9C958A" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="560" cy="460" r="9" fill="#9C958A"/>
+  <!-- Fumaça leve -->
+  <g fill="none" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round" opacity=".35" filter="url(#blur)">
+    <path d="M520 420 C510 400 534 388 522 366"/><path d="M600 420 C590 400 614 388 602 366"/>
+  </g>
+
+  <!-- Sacas de café verde -->
+  <g>
+    <path d="M40 440 C40 360 70 330 110 330 C150 330 180 360 180 440 Z" fill="#C9A97A"/>
+    <path d="M60 352 C90 342 130 342 160 352" stroke="#A6865A" stroke-width="4" fill="none"/>
+    <text x="82" y="402" text-anchor="middle" font-family="Georgia, serif" font-size="14" fill="#6B4A2A" letter-spacing="1.5">MINAS</text>
+    <path d="M120 440 C120 380 145 360 175 360 C205 360 228 380 228 440 Z" fill="#BE9C6C"/>
+  </g>
+</svg>
