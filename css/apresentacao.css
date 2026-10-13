@@ -403,6 +403,18 @@ body.com-notas .palco { margin-right: min(400px, 40vw); transition: margin .3s v
   .dock-btn { width: 36px; height: 36px; }
 }
 
+/* Telas baixas: compacta os slides mais densos */
+@media (max-height: 760px) and (min-width: 761px) {
+  .slide-cab { margin-bottom: 12px; }
+  .slide .skill-file { font-size: .98rem; }
+  .slide .skill-fields { gap: 8px; padding: 12px 18px; }
+  .slide .skill-steps li { padding: 0; }
+  .slide .project-head { padding: 10px 16px; }
+  .slide .project-section { padding: 10px 16px; }
+  .slide .project-instructions { font-size: .9rem; padding: 10px 14px; }
+  .slide .file-item { padding: 6px 10px; }
+}
+
 /* ---------- Movimento reduzido ---------- */
 @media (prefers-reduced-motion: reduce) {
   .bolha { animation: none !important; transition: none !important; }

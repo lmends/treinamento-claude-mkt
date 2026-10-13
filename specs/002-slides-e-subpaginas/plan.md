@@ -41,12 +41,14 @@ Sem violações; Complexity Tracking vazio.
 index.html            capa leve
 apresentacao.html     deck de slides
 estudo.html           material de estudo
-css/base.css          tokens, reset, botões e componentes compartilhados (chat, artefatos…)
+css/base.css          tokens, reset, botões
+css/componentes.css   chat, artefatos e componentes compartilhados
 css/inicio.css        capa
 css/apresentacao.css  deck
 css/estudo.css        estudo
 js/content.js         conteúdo (única fonte)
-js/comum.js           motor compartilhado → window.Treino
+js/comum.js           utilitários compartilhados → window.Treino
+js/componentes.js     chat, artefatos e componentes (estende window.Treino)
 js/inicio.js          capa
 js/apresentacao.js    deck
 js/estudo.js          estudo

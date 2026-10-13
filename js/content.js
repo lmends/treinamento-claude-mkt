@@ -122,7 +122,7 @@ window.CONTEUDO = {
     fimTreinamentoTitulo: "Você chegou ao fim do treinamento!",
     fimTreinamentoTexto: "Volte sempre que quiser revisar. Os prompts de prática estão no fim de cada módulo.",
     progressoLeitura: "Progresso de leitura",
-    concluidosN: "{n} concluídos",
+    concluidosN: "concluídos: {n}",
 
     /* Conversas */
     conversa: "Conversa simulada",

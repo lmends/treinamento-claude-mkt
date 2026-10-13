@@ -7,7 +7,7 @@
 | `slide` | objeto ou `false` | Campos que substituem os do bloco no deck (ex.: texto mais curto, outro `tipo`). `false` oculta o bloco no deck. |
 | `soNosSlides` | booleano | Bloco aparece só no deck. |
 | `passoAPasso` | booleano | Itens (cards, linhas, instruções) revelados um por avanço no deck. |
-| `nota` | texto | Nota do instrutor do bloco: painel de notas no deck; nota visível no estudo. |
+| `nota` | texto | Lembrete do instrutor para o bloco: só no painel de notas (N) do deck. |
 
 Tipos de bloco: `texto`, `destaque`, `cards`, `visao-geral`, `chat`, `comparativo`, `projeto`,
 `skill`, `tabela`, `tour`, `pratica`, `links`, e novo `frase` (frase de impacto, só título grande

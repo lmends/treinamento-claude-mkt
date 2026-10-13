@@ -15,31 +15,55 @@ Reaproveitamento de conteúdo · Cuidados e próximos passos.
 1. Baixe ou clone esta pasta.
 2. Dê **duplo clique em `index.html`**. Pronto: não precisa instalar nada nem rodar servidor.
 
-### Atalhos e modos
+O site tem três páginas:
 
-| Ação | Como |
-|------|------|
-| Trocar de módulo | Setas **←** e **→**, botões *Anterior/Próximo* ou a lista lateral |
-| Avançar a conversa | **Espaço** ou **Enter** (ou o botão *Avançar*) |
-| Concluir a mensagem que está animando | **Espaço** de novo |
-| Mostrar a conversa inteira | *Pular animação* |
-| Recomeçar a conversa | *Reiniciar conversa* |
-| Fechar painel/menu | **Esc** |
+| Página | Para quê |
+|--------|----------|
+| `index.html` (capa) | Escolher entre **Apresentar** e **Estudar**, ver os módulos e o progresso |
+| `apresentacao.html` | **Slides em tela cheia** para conduzir o treinamento |
+| `estudo.html` | **Material de consulta**, um módulo por vez |
 
-- **Modo apresentação** (padrão): as conversas avançam por clique; ideal para conduzir o treinamento.
-- **Modo estudo**: conversas completas e notas do instrutor visíveis; ideal para revisão.
-- O material lembra o módulo, o modo e o tema (claro/escuro) no próprio navegador.
-- Cada módulo tem endereço próprio, por exemplo `index.html#skills`.
+### Apresentação em slides
 
-Dica para apresentar: use o navegador em tela cheia (**F11**). Em telas a partir de 1100 px,
-os artefatos (carrossel, post, e-mail) abrem num painel ao lado da conversa automaticamente.
+Cada módulo começa com um slide de abertura, e cada bloco do conteúdo vira um slide. Os
+elementos entram com animação, as conversas acontecem dentro do slide (digitação, "pensando",
+texto aparecendo) e os resultados (carrossel, legendas, e-mail) surgem ao lado do chat.
+
+| Ação | Tecla |
+|------|-------|
+| Avançar (próximo item, próxima mensagem ou próximo slide) | **→**, **Espaço**, **Enter** ou **PageDown** |
+| Voltar ao slide anterior | **←**, **PageUp** ou **Backspace** |
+| Ir para o módulo 1–7 | **1** a **7** |
+| Primeiro / último slide | **Home** / **End** |
+| Visão geral de todos os slides | **O** |
+| Notas do instrutor | **N** |
+| Tela cheia | **F** |
+| Tela preta (pausa) | **B** (qualquer tecla volta) |
+
+- Avançar enquanto uma mensagem está sendo digitada conclui a mensagem na hora.
+- No celular ou tablet, **deslize para o lado** ou use os botões da barra inferior.
+- Com o mouse parado, a barra de controles some sozinha; mexa o mouse para ela voltar.
+- A barra fina no rodapé mostra o progresso de cada módulo; clique num trecho para pular.
+- Cada slide tem endereço próprio (ex.: `apresentacao.html#skills/5`) e a apresentação lembra
+  onde parou.
+
+### Estudo
+
+- Conversas completas, com as **notas do instrutor** visíveis.
+- **Ver animação** reproduz qualquer conversa no lugar; **Mostrar tudo** encerra a animação.
+- Os resultados aparecem logo abaixo da resposta, com abas e botão **Copiar texto**.
+- Índice "Nesta página", tempo estimado de leitura e barra de progresso de leitura.
+- **Concluí este módulo** marca o módulo (✓ na lista lateral e na capa).
+- Setas **←** **→** trocam de módulo. Endereço por módulo, ex.: `estudo.html#skills`.
+
+O tema claro/escuro segue o sistema e pode ser trocado pelo botão de sol/lua em qualquer página.
 
 ---
 
 ## 2. Como editar o conteúdo
 
 **Todo o texto fica em [`js/content.js`](js/content.js).** Você não precisa mexer em
-`app.js`, `styles.css` nem `index.html`. Abra `content.js` em qualquer editor de texto
+nenhum outro arquivo: os slides e a página de estudo são gerados a partir dele. Abra `content.js` em qualquer editor de texto
 (Bloco de Notas, VS Code etc.), altere e recarregue a página.
 
 ### Regras básicas
@@ -76,10 +100,10 @@ Campos de uma mensagem:
 |-------|----------|
 | `autor` | `"aluna"` ou `"assistente"` (obrigatório) |
 | `texto` | O conteúdo da mensagem (obrigatório) |
-| `nota` | Nota do instrutor, exibida no ícone **i** e no modo estudo |
+| `nota` | Nota do instrutor: visível no estudo e no painel de notas (**N**) dos slides |
 | `anexo` | Só para a aluna: `{ nome: "briefing.pdf", conteudo: "texto opcional" }` |
 | `skill` | Só para o assistente: mostra o selo "Skill em uso: …" |
-| `artefatos` | Só para o assistente: lista de artefatos que abrem no painel |
+| `artefatos` | Só para o assistente: resultados (carrossel, legendas, e-mail) exibidos ao lado do chat nos slides e abaixo da resposta no estudo |
 
 ### Exemplo: adicionar um módulo
 
@@ -106,7 +130,35 @@ Em `modulos: [ ... ]`, acrescente um objeto (a ordem da lista é a ordem de nave
 },
 ```
 
-O indicador "Módulo X de N" e a visão geral do Módulo 1 se atualizam sozinhos.
+O novo módulo aparece sozinho na capa, no estudo e nos slides (com slide de abertura, atalho
+numérico e trecho na barra de progresso).
+
+### Ajustar um bloco só para os slides
+
+Os mesmos blocos alimentam o estudo e os slides. Quando um texto é longo demais para projetar,
+use o campo `slide` para trocar só o que aparece na apresentação:
+
+```js
+{
+  tipo: "texto",
+  titulo: "O problema",
+  texto: "Toda conversa nova começa do zero. Explicar o tom de voz...",   // estudo
+  slide: {                                                                 // slides
+    tipo: "frase",
+    texto: "Toda conversa nova começa **do zero**.",
+    apoio: "O Projeto guarda as instruções e os arquivos de um trabalho."
+  },
+  nota: "Pergunte quantas vezes por semana ela explica o tom da marca."    // tecla N
+}
+```
+
+| Campo do bloco | Efeito |
+|----------------|--------|
+| `slide: { ... }` | Campos que substituem os do bloco **só nos slides** (pode até trocar o `tipo`) |
+| `slide: false` | O bloco aparece só no estudo |
+| `soNosSlides: true` | O bloco aparece só nos slides |
+| `passoAPasso: true` | Cards, linhas da tabela ou instruções da skill entram **um por avanço** |
+| `nota: "..."` | Lembrete para o instrutor no painel de notas (**N**) |
 
 ### Tipos de bloco disponíveis
 
@@ -114,6 +166,7 @@ O indicador "Módulo X de N" e a visão geral do Módulo 1 se atualizam sozinhos
 |--------|-------------------|
 | `texto` | `titulo`, `texto` |
 | `destaque` | `icone`, `titulo`, `texto`, `cor: "verde"` (opcional) |
+| `frase` | `texto` (frase de impacto), `apoio` (opcional), `icone` (opcional) |
 | `cards` | `titulo`, `itens: [{ icone, titulo, texto }]` |
 | `visao-geral` | `titulo` (lista os módulos automaticamente) |
 | `chat` | `tituloBloco`, `titulo`, `contexto`, `mensagens` |
@@ -133,7 +186,8 @@ O indicador "Módulo X de N" e a visão geral do Módulo 1 se atualizam sozinhos
 { tipo: "email", titulo: "...", assunto: "...", preCabecalho: "...", corpo: "...", botao: "..." }
 ```
 
-Os textos de botões e avisos da interface ficam no início de `content.js`, em `interface`.
+Os textos de botões e avisos ficam no início de `content.js`, em `interface`. O título e o
+subtítulo da capa (e do primeiro slide) ficam em `apresentacao`.
 
 ---
 
@@ -152,19 +206,30 @@ Os textos de botões e avisos da interface ficam no início de `content.js`, em 
 6. Em 1 ou 2 minutos o site estará em `https://SEU-USUARIO.github.io/treinamento-ia-marketing/`.
 
 Não há etapa de build. O arquivo `.nojekyll` faz o GitHub Pages servir os arquivos como estão.
-Para atualizar, basta editar `content.js` e enviar de novo (commit + push).
+Para atualizar, basta editar `content.js` e enviar de novo (commit + push). Os endereços
+ficam `.../index.html`, `.../apresentacao.html` e `.../estudo.html`.
 
 ---
 
 ## 4. Estrutura
 
 ```text
-index.html          estrutura da página
-css/styles.css      visual (tema claro/escuro, responsivo)
-js/content.js       TODO o conteúdo do treinamento  ← edite aqui
-js/app.js           navegação e simulação das conversas
-tests/              testes automatizados (opcional, só para desenvolvimento)
-specs/, .specify/   documentação do desenvolvimento (spec-kit)
+index.html            capa (leve: não carrega o motor de conversas)
+apresentacao.html     slides
+estudo.html           material de estudo
+css/base.css          cores, tema claro/escuro, botões
+css/componentes.css   chat, cards, artefatos e demais componentes
+css/inicio.css        capa
+css/apresentacao.css  slides (transições, tipografia de palco)
+css/estudo.css        página de estudo
+js/content.js         TODO o conteúdo do treinamento  ← edite aqui
+js/comum.js           utilitários compartilhados (textos, tema, progresso salvo)
+js/componentes.js     simulação das conversas, artefatos e componentes
+js/inicio.js          capa
+js/apresentacao.js    motor dos slides
+js/estudo.js          página de estudo
+tests/                testes automatizados (opcional, só para desenvolvimento)
+specs/, .specify/     documentação do desenvolvimento (spec-kit)
 ```
 
 ### Testes automatizados (opcional)
@@ -178,9 +243,10 @@ npx playwright install chromium
 npx playwright test
 ```
 
-Os testes abrem o `index.html` via `file://` em 1440 px e 375 px e verificam navegação por
-teclado, persistência, modos, comparativo, artefatos, cópia, tour, tema escuro, movimento
-reduzido, ausência de rolagem horizontal e ausência de requisições além da fonte.
+Os testes abrem as três páginas via `file://` em 1440 px e 375 px e verificam: todos os slides e
+módulos sem erros nem rolagem horizontal, teclado e controles dos slides, revelação passo a
+passo, conversas animadas, artefatos e cópia, visão geral, notas, tela preta, movimento
+reduzido, estudo (animação, conclusão, abas), tema e ausência de requisições além da fonte.
 
 ---
 
